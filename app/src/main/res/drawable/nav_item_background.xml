@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:state_checked="true">
+        <layer-list>
+            <item android:gravity="center">
+                <layer-list>
+                    <item android:drawable="@drawable/selected_icon_background" />
+                </layer-list>
+            </item>
+        </layer-list>
+    </item>
+    <item android:drawable="@drawable/unselected_icon_background" android:state_checked="false" />
+    <item android:drawable="@drawable/unselected_icon_background" />
+</selector>
