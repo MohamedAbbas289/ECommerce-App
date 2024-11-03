@@ -1,6 +1,9 @@
-package com.example.data.dataSource.category
+package com.example.data.dataSource
 
+import com.example.data.dataSource.category.CategoryDataSourceImpl
+import com.example.data.dataSource.subCategory.SubCategoryDataSourceImpl
 import com.example.data.dataSourceContract.CategoryDataSource
+import com.example.data.dataSourceContract.SubCategoryDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,4 +16,9 @@ abstract class Di {
     abstract fun bindCategoryDataSource(
         categoryDataSourceImpl: CategoryDataSourceImpl
     ): CategoryDataSource
+
+    @Binds
+    abstract fun bindSubCategoryDataSource(
+        subCategoryDataSourceImpl: SubCategoryDataSourceImpl
+    ): SubCategoryDataSource
 }
