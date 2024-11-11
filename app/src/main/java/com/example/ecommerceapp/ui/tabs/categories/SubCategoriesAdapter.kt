@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.ui.home.categories
+package com.example.ecommerceapp.ui.tabs.categories
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -27,10 +27,21 @@ class SubCategoriesAdapter(var subCategories: List<SubCategory?>?) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(subCategories!![position])
+        onItemClickListener?.let { clickListener ->
+            holder.itemView.setOnClickListener {
+                clickListener.onItemClick(position, subCategories!![position])
+            }
+        }
     }
 
     fun bindSubCategories(subCategories: List<SubCategory?>) {
         this.subCategories = subCategories
         notifyDataSetChanged()
+    }
+
+    var onItemClickListener: OnItemClickListener? = null
+
+    fun interface OnItemClickListener {
+        fun onItemClick(position: Int, item: SubCategory?)
     }
 }

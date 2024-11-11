@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.ui.home.categories
+package com.example.ecommerceapp.ui.tabs.categories
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,8 @@ import com.example.domain.model.Category
 import com.example.domain.model.SubCategory
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentCategoriesBinding
+import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
+import com.example.ecommerceapp.utils.Constants.Companion.SUB_CATEGORY_OBJECT
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,6 +58,12 @@ class CategoriesFragment : Fragment() {
                     binding.categoryName.text = it.name
                 }
             }
+        subCategoriesAdapter.onItemClickListener =
+            SubCategoriesAdapter.OnItemClickListener { position, subCategory ->
+                subCategory?.let {
+                    viewModel.invokeAction(CategoriesContract.Action.SubCategoryClicked(it))
+                }
+            }
         binding.categoriesRecycler.adapter = categoriesAdapter
         binding.subCategoryRecyclerView.adapter = subCategoriesAdapter
     }
@@ -66,7 +74,10 @@ class CategoriesFragment : Fragment() {
             is CategoriesContract.State.ErrorByCategory -> showError(state.message)
             is CategoriesContract.State.SuccessByCategory -> bindCategories(state.categories)
             is CategoriesContract.State.SuccessBySubCategory -> bindSubCategories(state.subCategories)
-            is CategoriesContract.State.ErrorBySubCategory -> showErrorBySubCategory(state.message)
+            is CategoriesContract.State.ErrorBySubCategory -> showErrorBySubCategory(
+                state.message,
+                state.category
+            )
             is CategoriesContract.State.LoadingBySubCategory -> showLoadingBySubCategory(state.message)
         }
     }
@@ -78,15 +89,20 @@ class CategoriesFragment : Fragment() {
         binding.errorViewBySubCategory.isVisible = false
         binding.successViewBySubCategory.isVisible = false
         binding.loadingViewBySubCategory.isVisible = true
+        binding.loadingTextBySubCategory.text = message
     }
 
-    private fun showErrorBySubCategory(message: String) {
+    private fun showErrorBySubCategory(message: String, category: Category) {
         binding.loadingView.isVisible = false
         binding.errorView.isVisible = false
         binding.successView.isVisible = true
         binding.errorViewBySubCategory.isVisible = true
         binding.successViewBySubCategory.isVisible = false
         binding.loadingViewBySubCategory.isVisible = false
+        binding.errorTextBySubCategory.text = message
+        binding.tryAgainBtnBySubCategory.setOnClickListener {
+            viewModel.invokeAction(CategoriesContract.Action.CategoryClicked(category))
+        }
     }
 
     private fun bindSubCategories(subCategories: List<SubCategory?>) {
@@ -146,8 +162,24 @@ class CategoriesFragment : Fragment() {
     private fun handleEvents(event: CategoriesContract.Event) {
         when (event) {
             is CategoriesContract.Event.NavigateToSubCategories -> navigateToCategory()
+            is CategoriesContract.Event.NavigateToProducts -> navigateToProducts(event.subCategory)
         }
     }
+
+    private fun navigateToProducts(subCategory: SubCategory) {
+        val bundle = Bundle()
+        bundle.putParcelable(SUB_CATEGORY_OBJECT, subCategory)
+        val productsFragment = ProductsFragment()
+        productsFragment.arguments = bundle
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
+            .hide(this)
+            .add(R.id.fragment_container, productsFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
 
     private fun navigateToCategory() {
         TODO("Not yet implemented")

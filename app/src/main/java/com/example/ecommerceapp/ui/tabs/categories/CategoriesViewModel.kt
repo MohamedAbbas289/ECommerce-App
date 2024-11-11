@@ -1,9 +1,10 @@
-package com.example.ecommerceapp.ui.home.categories
+package com.example.ecommerceapp.ui.tabs.categories
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.Category
+import com.example.domain.model.SubCategory
 import com.example.domain.usecase.GetCategoriesUseCase
 import com.example.domain.usecase.GetSubCategoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,12 @@ class CategoriesViewModel @Inject constructor(
         when (action) {
             is CategoriesContract.Action.LoadCategories -> loadCategories()
             is CategoriesContract.Action.CategoryClicked -> loadSubCategories(action.category)
+            is CategoriesContract.Action.SubCategoryClicked -> navigateToProducts(action.subCategory)
         }
+    }
+
+    private fun navigateToProducts(subCategory: SubCategory) {
+        _event.postValue(CategoriesContract.Event.NavigateToProducts(subCategory))
     }
 
     private fun loadSubCategories(category: Category) {
@@ -38,7 +44,8 @@ class CategoriesViewModel @Inject constructor(
             } catch (e: Exception) {
                 _state.postValue(
                     CategoriesContract.State.ErrorBySubCategory(
-                        message = e.localizedMessage ?: "Error"
+                        message = e.localizedMessage ?: "Error",
+                        category = category
                     )
                 )
             }

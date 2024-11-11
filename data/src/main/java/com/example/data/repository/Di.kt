@@ -2,7 +2,9 @@ package com.example.data.repository
 
 import com.example.data.repository.SubCategory.SubCategoryRepositoryImpl
 import com.example.data.repository.category.CategoryRepositoryImpl
+import com.example.data.repository.product.ProductRepositoryImpl
 import com.example.domain.repositories.categories.CategoriesRepository
+import com.example.domain.repositories.products.ProductsRepository
 import com.example.domain.repositories.subCategories.SubCategoriesRepository
 import dagger.Binds
 import dagger.Module
@@ -22,6 +24,9 @@ abstract class Di {
         subCategoryRepositoryImpl: SubCategoryRepositoryImpl
     ): SubCategoriesRepository
 
-
+    @Binds
+    abstract fun bindProductRepository(
+        productRepositoryImpl: ProductRepositoryImpl
+    ): ProductsRepository
 
 }

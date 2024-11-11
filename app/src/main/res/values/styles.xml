@@ -6,4 +6,9 @@
         <item name="android:textColor">@color/primary_color</item>
         <item name="android:paddingStart">6dp</item>
     </style>
+
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">25dp</item>
+    </style>
 </resources>
