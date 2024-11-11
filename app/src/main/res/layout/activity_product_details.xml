@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="product"
+            type="com.example.domain.model.Product" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        tools:context=".ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity">
+
+
+        <com.codebyashish.autoimageslider.AutoImageSlider
+            android:id="@+id/autoImageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            app:ais_auto_sliding="false"
+            app:ais_corner_radius="15"
+            app:ais_indicator_align="@string/center"
+            app:ais_placeholder="@drawable/placeholder_default_loading"
+            app:ais_time_interval="5000"
+            app:ais_title_background="@drawable/text_background"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/add_wishList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_add_to_wishlist"
+            app:layout_constraintEnd_toEndOf="@id/autoImageSlider"
+            app:layout_constraintTop_toTopOf="@id/autoImageSlider" />
+
+        <TextView
+            android:id="@+id/productTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@{product.title}"
+            android:textColor="@color/primary_color_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/productPrice"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/autoImageSlider"
+            tools:text="@string/nike_air_jordan" />
+
+        <TextView
+            android:id="@+id/productPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@{`EGP `+product.price.toString()}"
+            android:textColor="@color/primary_color_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/autoImageSlider"
+            tools:text="EGP 3500" />
+
+        <TextView
+            android:id="@+id/productNumOfSold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/sold_text_bg"
+            android:text="@{product.sold.toString()+` Sold`}"
+            android:textColor="@color/primary_color_dark"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productTitle"
+            tools:text="3230 Sold" />
+
+        <ImageView
+            android:id="@+id/ic_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_star"
+            app:layout_constraintStart_toEndOf="@id/productNumOfSold"
+            app:layout_constraintTop_toBottomOf="@id/productTitle" />
+
+        <TextView
+            android:id="@+id/rating_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:text="@{product.ratingsAverage.toString() +` (` +product.ratingsQuantity.toString()+`)`}"
+            android:textColor="@color/primary_color_dark"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/ic_star"
+            app:layout_constraintTop_toBottomOf="@id/productTitle"
+            tools:text="4.8 (7500)" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/quantity_container_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="30dp"
+            app:layout_constraintBottom_toBottomOf="@id/ic_star"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ic_star">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/primary_color"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/decrease_count"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:backgroundTint="@color/transparent"
+                    app:icon="@drawable/ic_decrease_count"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTintMode="multiply" />
+
+                <TextView
+                    android:id="@+id/counter_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="10dp"
+                    android:text="1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/increase_count"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:backgroundTint="@color/transparent"
+                    app:icon="@drawable/ic_increase_count"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTintMode="multiply" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/description_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/description"
+            android:textColor="@color/primary_color_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productNumOfSold" />
+
+        <TextView
+            android:id="@+id/productDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:maxLines="11"
+            android:text="@{product.description+` `}"
+            android:textColor="@color/light_text_color"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description_word"
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/add_to_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/primary_color"
+            android:paddingHorizontal="100dp"
+            android:text="@string/add_to_cart"
+            android:textColor="@color/white"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/ic_add_to_cart"
+            app:iconSize="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productDescription" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

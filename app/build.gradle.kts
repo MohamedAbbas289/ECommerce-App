@@ -68,7 +68,11 @@ dependencies {
     // Dependency injection Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
-
+    //lottie
+    val lottieVersion = "6.6.0"
+    implementation("com.airbnb.android:lottie:$lottieVersion")
+    //sliderView
+    implementation("com.github.dangiashish:Auto-Image-Slider:1.0.6")
     //implement data layer
     implementation(project(":data"))
     //implement domain layer

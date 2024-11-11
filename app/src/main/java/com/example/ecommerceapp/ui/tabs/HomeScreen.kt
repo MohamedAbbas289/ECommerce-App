@@ -1,4 +1,4 @@
-package com.example.ecommerceapp.ui.home
+package com.example.ecommerceapp.ui.tabs
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -9,10 +9,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.ActivityHomeScreenBinding
-import com.example.ecommerceapp.ui.home.categories.CategoriesFragment
-import com.example.ecommerceapp.ui.home.home.HomeFragment
-import com.example.ecommerceapp.ui.home.profile.ProfileFragment
-import com.example.ecommerceapp.ui.home.wishlist.WishlistFragment
+import com.example.ecommerceapp.ui.tabs.categories.CategoriesFragment
+import com.example.ecommerceapp.ui.tabs.home.HomeFragment
+import com.example.ecommerceapp.ui.tabs.profile.ProfileFragment
+import com.example.ecommerceapp.ui.tabs.wishlist.WishlistFragment
 import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 

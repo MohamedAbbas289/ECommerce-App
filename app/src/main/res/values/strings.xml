@@ -7,4 +7,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="what_do_you_search_for">what do you search for?</string>
+    <string name="nike_air_jordan">Nike Air Jordan</string>
+    <string name="resizable_text_read_more">…read more</string>
+    <string name="resizable_text_read_less"> read less</string>
+    <string name="description">Description</string>
+    <string name="add_to_cart">Add to cart</string>
 </resources>
