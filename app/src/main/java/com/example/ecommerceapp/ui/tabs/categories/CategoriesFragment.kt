@@ -135,7 +135,7 @@ class CategoriesFragment : Fragment() {
         binding.errorViewBySubCategory.isVisible = false
         binding.successViewBySubCategory.isVisible = false
         binding.loadingViewBySubCategory.isVisible = false
-        binding.loadingText.text = message
+
     }
 
     private fun bindCategories(categories: List<Category?>) {

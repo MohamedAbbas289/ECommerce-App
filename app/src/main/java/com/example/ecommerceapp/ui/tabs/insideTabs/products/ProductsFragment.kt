@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
 import com.example.ecommerceapp.databinding.FragmentProductsBinding
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity
+import com.example.ecommerceapp.utils.Constants.Companion.CATEGORY_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.SUB_CATEGORY_OBJECT
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ProductsFragment : Fragment() {
     var subCategory: SubCategory? = null
+    var category: Category? = null
     private lateinit var binding: FragmentProductsBinding
     private lateinit var viewModel: ProductsViewModel
     private val productsAdapter = ProductsAdapter(null)
@@ -27,6 +30,7 @@ class ProductsFragment : Fragment() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[ProductsViewModel::class.java]
         subCategory = arguments?.getParcelable(SUB_CATEGORY_OBJECT)
+        category = arguments?.getParcelable(CATEGORY_OBJECT)
     }
 
     override fun onCreateView(
@@ -42,8 +46,16 @@ class ProductsFragment : Fragment() {
         initViews()
         viewModel.events.observe(viewLifecycleOwner, ::handleEvents)
         viewModel.states.observe(viewLifecycleOwner, ::renderViewState)
-        subCategory?.let {
-            viewModel.invokeAction(ProductsContract.Action.LoadProductsBySubCategory(it))
+        //if subCategory has data, invoke action to load products by subCategory
+        if (subCategory != null) {
+            subCategory?.let {
+                viewModel.invokeAction(ProductsContract.Action.LoadProductsBySubCategory(it))
+            }
+        } else {
+            //if subCategory is null, invoke action to load products by category
+            category?.let {
+                viewModel.invokeAction(ProductsContract.Action.LoadProductsByCategory(it))
+            }
         }
     }
 
@@ -52,6 +64,20 @@ class ProductsFragment : Fragment() {
             is ProductsContract.State.Error -> showError(state.message, state.subCategory)
             is ProductsContract.State.Loading -> showLoading(state.message)
             is ProductsContract.State.Success -> bindProducts(state.products)
+            is ProductsContract.State.ErrorByCategory -> showErrorByCategory(
+                state.message,
+                state.category
+            )
+        }
+    }
+
+    private fun showErrorByCategory(message: String, category: Category) {
+        binding.successView.isVisible = false
+        binding.loadingView.isVisible = false
+        binding.errorView.isVisible = true
+        binding.errorText.text = message
+        binding.tryAgainBtn.setOnClickListener {
+            viewModel.invokeAction(ProductsContract.Action.LoadProductsByCategory(category))
         }
     }
 

@@ -17,18 +17,45 @@
         android:padding="16dp"
         tools:context=".ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity">
 
+        <ImageView
+            android:id="@+id/back_ic"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/back_ic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ic_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/shopping_cart_ic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_details"
+            android:textColor="@color/primary_color_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/ic_cart"
+            app:layout_constraintStart_toEndOf="@id/back_ic"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.codebyashish.autoimageslider.AutoImageSlider
             android:id="@+id/autoImageSlider"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:layout_marginTop="10dp"
             app:ais_auto_sliding="false"
             app:ais_corner_radius="15"
             app:ais_indicator_align="@string/center"
             app:ais_placeholder="@drawable/placeholder_default_loading"
             app:ais_time_interval="5000"
             app:ais_title_background="@drawable/text_background"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/back_ic" />
 
         <ImageView
             android:id="@+id/add_wishList"
@@ -42,7 +69,7 @@
 
         <TextView
             android:id="@+id/productTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@{product.title}"
@@ -50,7 +77,6 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/productPrice"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/autoImageSlider"
             tools:text="@string/nike_air_jordan" />

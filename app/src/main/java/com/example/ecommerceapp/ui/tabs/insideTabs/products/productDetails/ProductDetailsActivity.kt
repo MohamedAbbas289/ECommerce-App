@@ -13,7 +13,7 @@ import setResizableText
 class ProductDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductDetailsBinding
     val viewModel: ProductDetailsViewModel by viewModels()
-    var productCounter = 1
+    private var productCounter = 1
     var product: Product? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,10 +25,15 @@ class ProductDetailsActivity : AppCompatActivity() {
     private fun initViews() {
         product = intent.getParcelableExtra(PRODUCT_OBJECT)
         binding.product = product
-        binding.productDescription.setResizableText(product?.description!! + " ", 3, true)
+        binding.productDescription
+            .setResizableText(
+                product?.description!! + " ", 3, true
+            )
+        binding.backIc.setOnClickListener {
+            finish()
+        }
         bindProductImages()
         productCounterCalc()
-
     }
 
     private fun productCounterCalc() {

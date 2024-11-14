@@ -15,6 +15,7 @@ class ProductsContract {
     sealed class State {
         class Success(val products: List<Product?>) : State()
         class Error(val message: String, val subCategory: SubCategory) : State()
+        class ErrorByCategory(val message: String, val category: Category) : State()
         class Loading(val message: String) : State()
     }
 
