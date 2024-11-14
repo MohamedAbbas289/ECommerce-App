@@ -69,27 +69,111 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <ImageView
-            android:id="@+id/categoryImage"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/successViewBySubCategory"
             android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
+            android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintStart_toEndOf="@id/guideline">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/subCategoryRecyclerView"
+            <TextView
+                android:id="@+id/categoryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:textColor="@color/primary_color"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="men's fashion" />
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/categoryImage"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:scaleType="fitXY"
+                app:shapeAppearanceOverlay="@style/roundedImageView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/categoryName"
+                tools:src="@tools:sample/avatars" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/subCategoryRecyclerView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="20dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/categoryImage"
+                app:spanCount="2"
+                tools:listitem="@layout/item_sub_category" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/errorViewBySubCategory"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="match_parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/categoryImage"
+            app:layout_constraintStart_toEndOf="@id/guideline">
 
-            />
+            <TextView
+                android:id="@+id/errorTextBySubCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <Button
+                android:id="@+id/tryAgain_btnBySubCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/primary_color"
+                android:text="Try Again"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorTextBySubCategory" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/loadingViewBySubCategory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline">
+
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/primary_color"
+                app:layout_constraintBottom_toTopOf="@id/loadingTextBySubCategory"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/loadingTextBySubCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/loadingView"
@@ -97,22 +181,18 @@
             android:layout_height="match_parent">
 
 
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAnimationView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@color/primary_color"
-                app:layout_constraintBottom_toTopOf="@id/loadingText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/loadingText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/loading_product_animation"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:lottie_speed="2.5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

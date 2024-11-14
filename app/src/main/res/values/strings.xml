@@ -7,4 +7,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="what_do_you_search_for">what do you search for?</string>
+    <string name="nike_air_jordan">Nike Air Jordan</string>
+    <string name="resizable_text_read_more">…read more</string>
+    <string name="resizable_text_read_less"> read less</string>
+    <string name="description">Description</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="view_all">view all</string>
+    <string name="men_s_fashion">men\'s fashion</string>
+    <string name="tv_satellites_accessories"><![CDATA[TVs, Satellites & Accessories]]></string>
+    <string name="product_details">Product details</string>
 </resources>
