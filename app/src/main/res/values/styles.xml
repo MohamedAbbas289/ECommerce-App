@@ -9,6 +9,6 @@
 
     <style name="roundedImageView">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">25dp</item>
+        <item name="cornerSize">35dp</item>
     </style>
 </resources>

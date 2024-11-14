@@ -12,4 +12,8 @@
     <string name="resizable_text_read_less"> read less</string>
     <string name="description">Description</string>
     <string name="add_to_cart">Add to cart</string>
+    <string name="view_all">view all</string>
+    <string name="men_s_fashion">men\'s fashion</string>
+    <string name="tv_satellites_accessories"><![CDATA[TVs, Satellites & Accessories]]></string>
+    <string name="product_details">Product details</string>
 </resources>

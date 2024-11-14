@@ -3,6 +3,7 @@ package com.example.ecommerceapp.ui.tabs.insideTabs.products
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
 import com.example.domain.usecase.GetProductsUseCase
@@ -21,9 +22,26 @@ class ProductsViewModel @Inject constructor(
     override val events = _event
     override fun invokeAction(action: ProductsContract.Action) {
         when (action) {
-            is ProductsContract.Action.LoadProductsByCategory -> TODO()
+            is ProductsContract.Action.LoadProductsByCategory -> loadProductsByCategory(action.category)
             is ProductsContract.Action.LoadProductsBySubCategory -> loadProductsBySubCategory(action.subCategory)
             is ProductsContract.Action.ProductClicked -> navigateToProductDetails(action.product)
+        }
+    }
+
+    private fun loadProductsByCategory(category: Category) {
+        viewModelScope.launch {
+            try {
+                _state.postValue(ProductsContract.State.Loading(message = "Loading"))
+                val data = productsUseCase.invokeProductsByCategory(category)
+                _state.postValue(ProductsContract.State.Success(data ?: listOf()))
+            } catch (e: Exception) {
+                _state.postValue(
+                    ProductsContract.State.ErrorByCategory(
+                        message = e.localizedMessage ?: "Error",
+                        category = category
+                    )
+                )
+            }
         }
     }
 

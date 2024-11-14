@@ -28,7 +28,7 @@ class HomeScreen : AppCompatActivity(), OnItemSelectedListener {
     private fun initViews() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home_screen)
         binding.bottomNavHome.setOnItemSelectedListener(this)
-        binding.bottomNavHome.selectedItemId = R.id.navigation_categories
+        binding.bottomNavHome.selectedItemId = R.id.navigation_home
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -59,6 +59,7 @@ class HomeScreen : AppCompatActivity(), OnItemSelectedListener {
     private fun showFragment(fragment: Fragment) {
         supportFragmentManager
             .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
             .replace(R.id.fragment_container, fragment)
             .commit()
     }

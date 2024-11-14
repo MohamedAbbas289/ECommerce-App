@@ -88,13 +88,14 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="men's fashion" />
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/categoryImage"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginTop="16dp"
                 android:scaleType="fitXY"
+                app:shapeAppearanceOverlay="@style/roundedImageView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/categoryName"
@@ -180,22 +181,18 @@
             android:layout_height="match_parent">
 
 
-            <ProgressBar
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAnimationView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@color/primary_color"
-                app:layout_constraintBottom_toTopOf="@id/loadingText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/loadingText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_autoPlay="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/loading_product_animation"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:lottie_speed="2.5" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
