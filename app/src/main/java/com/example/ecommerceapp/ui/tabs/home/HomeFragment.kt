@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.codebyashish.autoimageslider.Enums.ImageScaleType
 import com.codebyashish.autoimageslider.Models.ImageSlidesModel
+import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
@@ -18,6 +19,7 @@ import com.example.ecommerceapp.databinding.FragmentHomeBinding
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsAdapter
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity
+import com.example.ecommerceapp.utils.Constants.Companion.BRAND_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.CATEGORY_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.TV_SUB_CATEGORY_ID
@@ -29,6 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private val categoriesAdapter = CategoriesHomeAdapter(null)
     private val productsAdapter = ProductsAdapter(null)
+    private val brandsAdapter = BrandsAdapter(null)
     private val tvSubCategory = SubCategory(id = TV_SUB_CATEGORY_ID)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,7 @@ class HomeFragment : Fragment() {
         viewModel.states.observe(viewLifecycleOwner, ::renderViewState)
         viewModel.invokeAction(HomeContract.Action.LoadCategories)
         viewModel.invokeAction(HomeContract.Action.LoadProducts(tvSubCategory))
+        viewModel.invokeAction(HomeContract.Action.LoadBrands)
     }
 
     private fun renderViewState(state: HomeContract.State) {
@@ -58,7 +62,15 @@ class HomeFragment : Fragment() {
             is HomeContract.State.Loading -> showLoading()
             is HomeContract.State.Success -> bindCategories(state.categories)
             is HomeContract.State.SuccessByProducts -> bindProducts(state.products)
+            is HomeContract.State.SuccessByBrands -> bindBrands(state.brands)
         }
+    }
+
+    private fun bindBrands(brands: List<Brand?>) {
+        binding.successView.isVisible = true
+        binding.errorView.isVisible = false
+        binding.loadingView.isVisible = false
+        brandsAdapter.bindBrands(brands)
     }
 
     private fun bindProducts(products: List<Product?>) {
@@ -116,8 +128,28 @@ class HomeFragment : Fragment() {
             CategoriesHomeAdapter.OnItemClickListener { position, category ->
                 navigateToProductsByCategory(category)
             }
+
+        brandsAdapter.onItemClickListener =
+            BrandsAdapter.OnItemClickListener { position, brand ->
+                navigateToProductsByBrand(brand)
+            }
         binding.categoriesRecycler.adapter = categoriesAdapter
         binding.tvRecycler.adapter = productsAdapter
+        binding.brandsRecycler.adapter = brandsAdapter
+    }
+
+    private fun navigateToProductsByBrand(brand: Brand?) {
+        val bundle = Bundle()
+        bundle.putParcelable(BRAND_OBJECT, brand)
+        val productsFragment = ProductsFragment()
+        productsFragment.arguments = bundle
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
+            .hide(this)
+            .add(R.id.fragment_container, productsFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun navigateToProductsByCategory(category: Category?) {

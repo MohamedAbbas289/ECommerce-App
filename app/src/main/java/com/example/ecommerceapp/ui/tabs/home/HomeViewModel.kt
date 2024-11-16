@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
+import com.example.domain.usecase.GetBrandsUseCase
 import com.example.domain.usecase.GetCategoriesUseCase
 import com.example.domain.usecase.GetProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val getProductsUseCase: GetProductsUseCase
+    private val getProductsUseCase: GetProductsUseCase,
+    private val getBrandsUseCase: GetBrandsUseCase
 ) : ViewModel(), HomeContract.ViewModel {
     private val _state = MutableLiveData<HomeContract.State>()
     override val states = _state
@@ -27,6 +29,22 @@ class HomeViewModel @Inject constructor(
             HomeContract.Action.LoadCategories -> loadCategories()
             is HomeContract.Action.LoadProducts -> loadProducts(action.subCategory)
             is HomeContract.Action.ProductClicked -> navigateToProductDetails(action.product)
+            HomeContract.Action.LoadBrands -> loadBrands()
+        }
+    }
+
+    private fun loadBrands() {
+        viewModelScope.launch {
+            try {
+                val data = getBrandsUseCase.invoke()
+                _state.postValue(HomeContract.State.SuccessByBrands(data ?: listOf()))
+            } catch (e: Exception) {
+                _state.postValue(
+                    HomeContract.State.Error(
+                        message = e.localizedMessage ?: "Error"
+                    )
+                )
+            }
         }
     }
 

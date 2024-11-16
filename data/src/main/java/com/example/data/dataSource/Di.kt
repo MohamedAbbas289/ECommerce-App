@@ -1,8 +1,10 @@
 package com.example.data.dataSource
 
+import com.example.data.dataSource.brand.BrandDataSourceImpl
 import com.example.data.dataSource.category.CategoryDataSourceImpl
 import com.example.data.dataSource.product.ProductDataSourceImpl
 import com.example.data.dataSource.subCategory.SubCategoryDataSourceImpl
+import com.example.data.dataSourceContract.BrandDataSource
 import com.example.data.dataSourceContract.CategoryDataSource
 import com.example.data.dataSourceContract.ProductDataSource
 import com.example.data.dataSourceContract.SubCategoryDataSource
@@ -28,4 +30,9 @@ abstract class Di {
     abstract fun bindProductDataSource(
         productDataSourceImpl: ProductDataSourceImpl
     ): ProductDataSource
+
+    @Binds
+    abstract fun bindBrandDataSource(
+        brandDataSourceImpl: BrandDataSourceImpl
+    ): BrandDataSource
 }

@@ -2,6 +2,7 @@ package com.example.data.dataSource.product
 
 import com.example.data.api.WebServices
 import com.example.data.dataSourceContract.ProductDataSource
+import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
@@ -19,6 +20,13 @@ class ProductDataSourceImpl @Inject constructor(
 
     override suspend fun getProductsBySubCategory(subCategory: SubCategory): List<Product?>? {
         val response = webServices.getProductsBySubCategory(subCategoryId = subCategory.id!!)
+        return response.data?.map {
+            it?.toProduct()
+        }
+    }
+
+    override suspend fun getProductsByBrand(brand: Brand): List<Product?>? {
+        val response = webServices.getProductsByBrand(brandId = brand.id!!)
         return response.data?.map {
             it?.toProduct()
         }

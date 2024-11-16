@@ -1,5 +1,6 @@
 package com.example.domain.usecase
 
+import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
@@ -16,5 +17,10 @@ class GetProductsUseCase @Inject constructor(
     suspend fun invokeProductsBySubCategory(subCategory: SubCategory): List<Product?>? {
         return repo.getProductsBySubCategory(subCategory)
     }
+
+    suspend fun invokeProductsByBrand(brand: Brand): List<Product?>? {
+        return repo.getProductsByBrand(brand)
+    }
+
 
 }

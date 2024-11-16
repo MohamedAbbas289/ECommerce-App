@@ -1,6 +1,7 @@
 package com.example.ecommerceapp.ui.tabs.home
 
 import androidx.lifecycle.LiveData
+import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
@@ -17,11 +18,13 @@ class HomeContract {
         class Error(val message: String) : State()
         class Success(val categories: List<Category?>) : State()
         class SuccessByProducts(val products: List<Product?>) : State()
+        class SuccessByBrands(val brands: List<Brand?>) : State()
         class Loading : State()
     }
 
     sealed class Action {
         object LoadCategories : Action()
+        object LoadBrands : Action()
         class LoadProducts(val subCategory: SubCategory) : Action()
         class ProductClicked(val product: Product) : Action()
     }

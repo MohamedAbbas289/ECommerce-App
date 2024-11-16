@@ -1,6 +1,7 @@
 package com.example.data.repository.product
 
 import com.example.data.dataSourceContract.ProductDataSource
+import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
@@ -16,5 +17,9 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun getProductsBySubCategory(subCategory: SubCategory): List<Product?>? {
         return productDataSource.getProductsBySubCategory(subCategory)
+    }
+
+    override suspend fun getProductsByBrand(brand: Brand): List<Product?>? {
+        return productDataSource.getProductsByBrand(brand)
     }
 }

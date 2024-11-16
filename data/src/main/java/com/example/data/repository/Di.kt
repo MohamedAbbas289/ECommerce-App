@@ -1,8 +1,10 @@
 package com.example.data.repository
 
 import com.example.data.repository.SubCategory.SubCategoryRepositoryImpl
+import com.example.data.repository.brand.BrandRepositoryImpl
 import com.example.data.repository.category.CategoryRepositoryImpl
 import com.example.data.repository.product.ProductRepositoryImpl
+import com.example.domain.repositories.brands.BrandsRepository
 import com.example.domain.repositories.categories.CategoriesRepository
 import com.example.domain.repositories.products.ProductsRepository
 import com.example.domain.repositories.subCategories.SubCategoriesRepository
@@ -29,4 +31,8 @@ abstract class Di {
         productRepositoryImpl: ProductRepositoryImpl
     ): ProductsRepository
 
+    @Binds
+    abstract fun bindBrandRepository(
+        brandRepositoryImpl: BrandRepositoryImpl
+    ): BrandsRepository
 }
