@@ -1,14 +1,19 @@
 package com.example.ecommerceapp.ui.tabs.home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.common.ResultWrapper
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
 import com.example.domain.usecase.GetBrandsUseCase
 import com.example.domain.usecase.GetCategoriesUseCase
 import com.example.domain.usecase.GetProductsUseCase
+import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,9 +21,12 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getProductsUseCase: GetProductsUseCase,
-    private val getBrandsUseCase: GetBrandsUseCase
+    private val getBrandsUseCase: GetBrandsUseCase,
+    @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), HomeContract.ViewModel {
-    private val _state = MutableLiveData<HomeContract.State>()
+    private val _state = MutableStateFlow<HomeContract.State>(
+        HomeContract.State.Loading()
+    )
     override val states = _state
 
     private val _event = MutableLiveData<HomeContract.Event>()
@@ -34,17 +42,44 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadBrands() {
-        viewModelScope.launch {
-            try {
-                val data = getBrandsUseCase.invoke()
-                _state.postValue(HomeContract.State.SuccessByBrands(data ?: listOf()))
-            } catch (e: Exception) {
-                _state.postValue(
-                    HomeContract.State.Error(
-                        message = e.localizedMessage ?: "Error"
-                    )
-                )
-            }
+        viewModelScope.launch(ioDispatcher) {
+            getBrandsUseCase.invoke()
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.error?.message ?: "Error"
+                                )
+                            )
+                            Log.d("GTAG", "error: ${response.error?.message}")
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(HomeContract.State.Loading())
+                            Log.d("GTAG", "loading")
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                            Log.d("GTAG", "server error: ${response.serverError.serverMessage}")
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                HomeContract.State.SuccessByBrands(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success: ${response.data}")
+                        }
+                    }
+                }
+
         }
     }
 
@@ -53,33 +88,83 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun loadProducts(subCategory: SubCategory) {
-        viewModelScope.launch {
-            try {
-                val data = getProductsUseCase.invokeProductsBySubCategory(subCategory)
-                _state.postValue(HomeContract.State.SuccessByProducts(data ?: listOf()))
-            } catch (e: Exception) {
-                _state.postValue(
-                    HomeContract.State.Error(
-                        message = e.localizedMessage ?: "Error"
-                    )
-                )
-            }
+        viewModelScope.launch(ioDispatcher) {
+            getProductsUseCase.invokeProductsBySubCategory(subCategory)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.error?.localizedMessage ?: "Error"
+                                )
+                            )
+                            Log.d("GTAG", "error: ${response.error?.localizedMessage}")
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(HomeContract.State.Loading())
+                            Log.d("GTAG", "loading: ")
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                            Log.d("GTAG", "server error: ${response.serverError.serverMessage}")
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                HomeContract.State.SuccessByProducts(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success: ${response.data}")
+                        }
+                    }
+
+                }
         }
     }
 
     private fun loadCategories() {
-        viewModelScope.launch {
-            try {
-                _state.postValue(HomeContract.State.Loading())
-                val data = getCategoriesUseCase.invoke()
-                _state.postValue(HomeContract.State.Success(data ?: listOf()))
-            } catch (e: Exception) {
-                _state.postValue(
-                    HomeContract.State.Error(
-                        message = e.localizedMessage ?: "Error"
-                    )
-                )
-            }
+        viewModelScope.launch(ioDispatcher) {
+            getCategoriesUseCase.invoke()
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.error?.localizedMessage ?: "Error"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                HomeContract.State.Success(
+                                    response.data ?: listOf()
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(HomeContract.State.Loading())
+                        }
+                    }
+
+                }
+
         }
     }
 }

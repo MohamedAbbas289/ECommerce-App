@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.example.ecommerceapp.ui.tabs.auth.signup.RegisterViewModel" />
+
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -47,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:error="@{vm.userNameError}"
                 app:boxStrokeColor="@color/primary_color"
                 app:errorEnabled="true"
                 app:helperTextTextAppearance="@color/primary_color"
@@ -56,6 +61,7 @@
                     android:id="@+id/full_name_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@={vm.userName}"
                     android:autofillHints="emailAddress"
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/enter_your_full_name"
@@ -79,6 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:error="@{vm.emailError}"
                 app:boxStrokeColor="@color/primary_color"
                 app:errorEnabled="true"
                 app:helperTextTextAppearance="@color/primary_color"
@@ -88,6 +95,7 @@
                     android:id="@+id/email_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@={vm.email}"
                     android:autofillHints="emailAddress"
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/enter_your_email"
@@ -110,6 +118,7 @@
                 android:id="@+id/phone_no_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:error="@{vm.phoneError}"
                 android:layout_marginTop="16dp"
                 app:boxStrokeColor="@color/primary_color"
                 app:errorEnabled="true"
@@ -120,6 +129,7 @@
                     android:id="@+id/phone_no_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@={vm.phone}"
                     android:autofillHints="emailAddress"
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/enter_your_phone_number"
@@ -143,6 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:error="@{vm.passwordError}"
                 app:boxStrokeColor="@color/primary_color"
                 app:errorEnabled="true"
                 app:helperTextTextAppearance="@color/primary_color"
@@ -153,6 +164,7 @@
                     android:id="@+id/password_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@={vm.password}"
                     android:autofillHints="emailAddress"
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/enter_your_password"
@@ -176,6 +188,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:error="@{vm.passwordConfirmationError}"
                 app:boxStrokeColor="@color/primary_color"
                 app:errorEnabled="true"
                 app:helperTextTextAppearance="@color/primary_color"
@@ -186,6 +199,7 @@
                     android:id="@+id/re_password_editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@={vm.passwordConfirmation}"
                     android:autofillHints="emailAddress"
                     android:background="@drawable/edit_text_background"
                     android:hint="@string/re_enter_password"
@@ -206,7 +220,26 @@
                 app:cornerRadius="15dp"
                 app:layout_constraintTop_toBottomOf="@id/re_password_layout" />
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/loading_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/progress_bar" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 

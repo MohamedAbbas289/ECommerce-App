@@ -15,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         Handler(Looper.getMainLooper())
             .postDelayed({
-                navigateToLogin()
+                navigateToHome()
             }, 1000)
     }
 

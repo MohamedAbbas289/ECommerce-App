@@ -8,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
@@ -20,6 +23,7 @@ import com.example.ecommerceapp.utils.Constants.Companion.CATEGORY_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.SUB_CATEGORY_OBJECT
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ProductsFragment : Fragment() {
@@ -51,7 +55,13 @@ class ProductsFragment : Fragment() {
         initViews()
         Log.d("brand", "onViewCreated: $brand")
         viewModel.events.observe(viewLifecycleOwner, ::handleEvents)
-        viewModel.states.observe(viewLifecycleOwner, ::renderViewState)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.states.collect {
+                    renderViewState(it)
+                }
+            }
+        }
         //if subCategory has data, invoke action to load products by subCategory
         if (subCategory != null) {
             subCategory?.let {

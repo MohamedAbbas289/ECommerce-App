@@ -1,27 +1,39 @@
 package com.example.ecommerceapp.ui.tabs.categories
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.common.ResultWrapper
 import com.example.domain.model.Category
 import com.example.domain.model.SubCategory
 import com.example.domain.usecase.GetCategoriesUseCase
 import com.example.domain.usecase.GetSubCategoriesUseCase
+import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CategoriesViewModel @Inject constructor(
     private val categoriesUseCase: GetCategoriesUseCase,
-    private val subCategoriesUseCase: GetSubCategoriesUseCase
+    private val subCategoriesUseCase: GetSubCategoriesUseCase,
+    @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), CategoriesContract.ViewModel {
-    private val _state = MutableLiveData<CategoriesContract.State>()
+    private val _state = MutableStateFlow<CategoriesContract.State>(
+        CategoriesContract.State.LoadingByCategory
+    )
     override val states = _state
 
     private val _event = MutableLiveData<CategoriesContract.Event>()
     override val events = _event
 
+    private val coroutineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+    }
 
     override fun invokeAction(action: CategoriesContract.Action) {
         when (action) {
@@ -37,34 +49,94 @@ class CategoriesViewModel @Inject constructor(
 
     private fun loadSubCategories(category: Category) {
         viewModelScope.launch {
-            try {
-                _state.postValue(CategoriesContract.State.LoadingBySubCategory(message = "Loading"))
-                val data = subCategoriesUseCase.invoke(category)
-                _state.postValue(CategoriesContract.State.SuccessBySubCategory(data ?: listOf()))
-            } catch (e: Exception) {
-                _state.postValue(
-                    CategoriesContract.State.ErrorBySubCategory(
-                        message = e.localizedMessage ?: "Error",
-                        category = category
-                    )
-                )
-            }
+            _state.emit(CategoriesContract.State.LoadingBySubCategory(message = "Loading"))
+            subCategoriesUseCase.invoke(category)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                CategoriesContract.State.ErrorBySubCategory(
+                                    response.error?.message ?: "Error",
+                                    category
+                                )
+                            )
+                            Log.d("GTAG", "error: ${response.error}")
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(
+                                CategoriesContract.State.LoadingBySubCategory(
+                                    "Loading.."
+                                )
+                            )
+                            Log.d("GTAG", "loading")
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                CategoriesContract.State.ErrorBySubCategory(
+                                    response.serverError.serverMessage,
+                                    category
+                                )
+                            )
+                            Log.d("GTAG", "serverError: ${response.serverError}")
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                CategoriesContract.State.SuccessBySubCategory(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success: ${response.data}")
+                        }
+                    }
+                }
+
         }
     }
 
     private fun loadCategories() {
-        viewModelScope.launch {
-            try {
-                _state.postValue(CategoriesContract.State.LoadingByCategory(message = "Loading"))
-                val data = categoriesUseCase.invoke()
-                _state.postValue(CategoriesContract.State.SuccessByCategory(data ?: listOf()))
-            } catch (e: Exception) {
-                _state.postValue(
-                    CategoriesContract.State.ErrorByCategory(
-                        message = e.localizedMessage ?: "Error"
-                    )
-                )
-            }
+        viewModelScope.launch(ioDispatcher + coroutineExceptionHandler) {
+            categoriesUseCase.invoke()
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                CategoriesContract.State.SuccessByCategory(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success: ${response.data}")
+                        }
+
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                CategoriesContract.State.ErrorByCategory(
+                                    response.error?.localizedMessage ?: "Error"
+                                )
+                            )
+                            Log.d("GTAG", "error: ${response.error}")
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                CategoriesContract.State.ErrorByCategory(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                            Log.d("GTAG", "serverError: ${response.serverError}")
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(CategoriesContract.State.LoadingByCategory)
+                            Log.d("GTAG", "loading")
+                        }
+
+                    }
+                }
+
+
         }
     }
 

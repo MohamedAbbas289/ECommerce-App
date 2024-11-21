@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.example.ecommerceapp.ui.tabs.auth.login.LoginViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,6 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            app:error="@{vm.emailError}"
             app:boxStrokeColor="@color/primary_color"
             app:errorEnabled="true"
             app:helperTextTextAppearance="@color/primary_color"
@@ -74,6 +78,7 @@
                 android:id="@+id/email_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@={vm.email}"
                 android:autofillHints="emailAddress"
                 android:background="@drawable/edit_text_background"
                 android:hint="@string/enter_your_email"
@@ -97,6 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            app:error="@{vm.passwordError}"
             app:boxStrokeColor="@color/primary_color"
             app:errorEnabled="true"
             app:helperTextTextAppearance="@color/primary_color"
@@ -107,6 +113,7 @@
                 android:id="@+id/password_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@={vm.password}"
                 android:autofillHints="emailAddress"
                 android:background="@drawable/edit_text_background"
                 android:hint="@string/enter_your_password"
@@ -162,6 +169,19 @@
             app:layout_constraintStart_toEndOf="@id/do_not_have_account_txt"
             app:layout_constraintTop_toBottomOf="@id/login_btn" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/loading_product_animation"
+            app:lottie_speed="2.5" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

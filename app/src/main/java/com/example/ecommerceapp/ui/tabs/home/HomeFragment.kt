@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.codebyashish.autoimageslider.Enums.ImageScaleType
 import com.codebyashish.autoimageslider.Models.ImageSlidesModel
 import com.example.domain.model.Brand
@@ -16,6 +19,7 @@ import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentHomeBinding
+import com.example.ecommerceapp.ui.tabs.categories.CategoriesFragment
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsAdapter
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity
@@ -24,6 +28,7 @@ import com.example.ecommerceapp.utils.Constants.Companion.CATEGORY_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
 import com.example.ecommerceapp.utils.Constants.Companion.TV_SUB_CATEGORY_ID
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -50,7 +55,14 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         viewModel.events.observe(viewLifecycleOwner, ::handleEvents)
-        viewModel.states.observe(viewLifecycleOwner, ::renderViewState)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.states.collect {
+                    renderViewState(it)
+                }
+            }
+        }
+
         viewModel.invokeAction(HomeContract.Action.LoadCategories)
         viewModel.invokeAction(HomeContract.Action.LoadProducts(tvSubCategory))
         viewModel.invokeAction(HomeContract.Action.LoadBrands)
@@ -117,6 +129,9 @@ class HomeFragment : Fragment() {
 
     private fun initViews() {
         bindAdsImages()
+        binding.viewAllTxt.setOnClickListener {
+            navigateToCategories()
+        }
         productsAdapter.onItemClickListener =
             ProductsAdapter.OnItemClickListener { position, product ->
                 product?.let {
@@ -136,6 +151,14 @@ class HomeFragment : Fragment() {
         binding.categoriesRecycler.adapter = categoriesAdapter
         binding.tvRecycler.adapter = productsAdapter
         binding.brandsRecycler.adapter = brandsAdapter
+    }
+
+    private fun navigateToCategories() {
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
+            .replace(R.id.fragment_container, CategoriesFragment())
+            .commit()
     }
 
     private fun navigateToProductsByBrand(brand: Brand?) {

@@ -1,10 +1,17 @@
 package com.example.data.api
 
+import com.example.data.model.BaseResponse
 import com.example.data.model.brand.BrandResponse
 import com.example.data.model.category.CategoriesResponse
 import com.example.data.model.product.ProductResponse
 import com.example.data.model.subCategory.SubCategoryResponse
+import com.example.data.model.user.AuthResponse
+import com.example.domain.model.Category
+import com.example.domain.model.LoginRequest
+import com.example.domain.model.SignupRequest
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface WebServices {
@@ -25,5 +32,11 @@ interface WebServices {
 
     @GET("api/v1/products")
     suspend fun getProductsByBrand(@Query("brand") brandId: String): ProductResponse
+
+    @POST("api/v1/auth/signup")
+    suspend fun signup(@Body signupRequest: SignupRequest): AuthResponse
+
+    @POST("api/v1/auth/signin")
+    suspend fun login(@Body loginRequest: LoginRequest): AuthResponse
 
 }

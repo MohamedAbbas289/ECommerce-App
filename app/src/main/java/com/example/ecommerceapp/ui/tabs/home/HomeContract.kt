@@ -5,11 +5,13 @@ import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 
 class HomeContract {
     interface ViewModel {
-        val states: LiveData<State>
+        val states: StateFlow<State>
         val events: LiveData<Event>
         fun invokeAction(action: Action)
     }
