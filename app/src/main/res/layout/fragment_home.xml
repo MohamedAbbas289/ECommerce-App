@@ -92,12 +92,35 @@
                     tools:listitem="@layout/item_product" />
 
                 <ImageView
+                    android:id="@+id/foot_Ad"
                     android:layout_width="match_parent"
                     android:layout_height="110dp"
                     android:layout_marginTop="24dp"
                     android:src="@drawable/foot_ad"
                     app:layout_constraintTop_toBottomOf="@id/tv_recycler" />
 
+                <TextView
+                    android:id="@+id/brands_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/brands"
+                    android:textColor="@color/primary_color_dark"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/foot_Ad" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/brands_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintTop_toBottomOf="@id/brands_txt"
+                    app:spanCount="2"
+                    tools:listitem="@layout/item_category_home" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

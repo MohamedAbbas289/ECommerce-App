@@ -1,20 +1,25 @@
 package com.example.ecommerceapp.ui.tabs.categories
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import com.example.domain.common.Constants.Companion.SUB_CATEGORY_OBJECT
 import com.example.domain.model.Category
 import com.example.domain.model.SubCategory
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentCategoriesBinding
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
-import com.example.ecommerceapp.utils.Constants.Companion.SUB_CATEGORY_OBJECT
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CategoriesFragment : Fragment() {
@@ -42,7 +47,12 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         viewModel.events.observe(viewLifecycleOwner, ::handleEvents)
-        viewModel.states.observe(viewLifecycleOwner, ::renderViewState)
+//        viewModel.states.observe(viewLifecycleOwner, ::renderViewState)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.states.collect { renderViewState(it) }
+            }
+        }
         viewModel.invokeAction(CategoriesContract.Action.LoadCategories)
     }
 
@@ -51,6 +61,7 @@ class CategoriesFragment : Fragment() {
             CategoriesAdapter.OnItemClickListener { position, item ->
                 item?.let {
                     viewModel.invokeAction(CategoriesContract.Action.CategoryClicked(it))
+                    Log.d("GTAG", "categoryClicked: $it")
                     Glide.with(this)
                         .load(it.image)
                         .placeholder(R.drawable.place_holder_img)
@@ -70,7 +81,7 @@ class CategoriesFragment : Fragment() {
 
     private fun renderViewState(state: CategoriesContract.State) {
         when (state) {
-            is CategoriesContract.State.LoadingByCategory -> showLoading(state.message)
+            is CategoriesContract.State.LoadingByCategory -> showLoading()
             is CategoriesContract.State.ErrorByCategory -> showError(state.message)
             is CategoriesContract.State.SuccessByCategory -> bindCategories(state.categories)
             is CategoriesContract.State.SuccessBySubCategory -> bindSubCategories(state.subCategories)
@@ -128,7 +139,7 @@ class CategoriesFragment : Fragment() {
         }
     }
 
-    private fun showLoading(message: String) {
+    private fun showLoading() {
         binding.loadingView.isVisible = true
         binding.errorView.isVisible = false
         binding.successView.isVisible = false
