@@ -6,12 +6,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.ActivityLoginBinding
 import com.example.ecommerceapp.ui.tabs.HomeScreen
 import com.example.ecommerceapp.ui.tabs.auth.signup.RegisterActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -24,7 +28,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.states.observe(this, ::renderViewStates)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.states.collect { renderViewStates(it) }
+            }
+        }
+        //viewModel.states.observe(this, ::renderViewStates)
         viewModel.events.observe(this, ::handleEvents)
     }
 
@@ -45,6 +54,7 @@ class LoginActivity : AppCompatActivity() {
             is LoginContract.State.Error -> showError(state.message)
             is LoginContract.State.Loading -> showLoading()
             is LoginContract.State.Success -> loginSuccess()
+            is LoginContract.State.Nothing -> return
         }
     }
 
@@ -57,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String) {
+        binding.lottieAnimationView.isVisible = false
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 

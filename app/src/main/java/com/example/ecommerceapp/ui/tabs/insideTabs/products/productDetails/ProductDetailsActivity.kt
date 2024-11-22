@@ -5,9 +5,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.codebyashish.autoimageslider.Enums.ImageScaleType
 import com.codebyashish.autoimageslider.Models.ImageSlidesModel
+import com.example.domain.common.Constants.Companion.PRODUCT_OBJECT
 import com.example.domain.model.Product
 import com.example.ecommerceapp.databinding.ActivityProductDetailsBinding
-import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
 import setResizableText
 
 class ProductDetailsActivity : AppCompatActivity() {

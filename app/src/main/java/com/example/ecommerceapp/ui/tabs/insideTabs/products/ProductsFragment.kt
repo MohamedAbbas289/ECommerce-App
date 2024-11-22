@@ -12,16 +12,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.domain.common.Constants.Companion.BRAND_OBJECT
+import com.example.domain.common.Constants.Companion.CATEGORY_OBJECT
+import com.example.domain.common.Constants.Companion.PRODUCT_OBJECT
+import com.example.domain.common.Constants.Companion.SUB_CATEGORY_OBJECT
 import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
 import com.example.ecommerceapp.databinding.FragmentProductsBinding
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity
-import com.example.ecommerceapp.utils.Constants.Companion.BRAND_OBJECT
-import com.example.ecommerceapp.utils.Constants.Companion.CATEGORY_OBJECT
-import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
-import com.example.ecommerceapp.utils.Constants.Companion.SUB_CATEGORY_OBJECT
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

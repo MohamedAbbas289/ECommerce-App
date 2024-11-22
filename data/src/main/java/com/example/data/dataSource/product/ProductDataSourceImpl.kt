@@ -15,30 +15,30 @@ class ProductDataSourceImpl @Inject constructor(
     private val webServices: WebServices
 ) : ProductDataSource {
     override suspend fun getProductsByCategory(category: Category): Flow<ResultWrapper<List<Product?>?>> {
-        val response = webServices.getProductsByCategory(categoryId = category.id!!)
-        return safeApiCall {
-            response.data?.map {
+        val response = safeApiCall {
+            webServices.getProductsByCategory(category.id!!).data?.map {
                 it?.toProduct()
             }
         }
-
+        return response
     }
 
+
     override suspend fun getProductsBySubCategory(subCategory: SubCategory): Flow<ResultWrapper<List<Product?>?>> {
-        val response = webServices.getProductsBySubCategory(subCategoryId = subCategory.id!!)
-        return safeApiCall {
-            response.data?.map {
+        val response = safeApiCall {
+            webServices.getProductsBySubCategory(subCategory.id!!).data?.map {
                 it?.toProduct()
             }
         }
+        return response
     }
 
     override suspend fun getProductsByBrand(brand: Brand): Flow<ResultWrapper<List<Product?>?>> {
-        val response = webServices.getProductsByBrand(brandId = brand.id!!)
-        return safeApiCall {
-            response.data?.map {
+        val response = safeApiCall {
+            webServices.getProductsByBrand(brand.id!!).data?.map {
                 it?.toProduct()
             }
         }
+        return response
     }
 }

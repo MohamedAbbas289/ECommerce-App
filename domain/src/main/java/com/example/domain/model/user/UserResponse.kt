@@ -1,10 +1,11 @@
 package com.example.domain.model.user
 
-import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserResponse(
+    val statusMsg: String? = null,
     val message: String? = null,
     val user: User? = null,
     val token: String? = null

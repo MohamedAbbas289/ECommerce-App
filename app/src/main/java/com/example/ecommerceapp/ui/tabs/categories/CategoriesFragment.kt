@@ -12,12 +12,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
+import com.example.domain.common.Constants.Companion.SUB_CATEGORY_OBJECT
 import com.example.domain.model.Category
 import com.example.domain.model.SubCategory
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentCategoriesBinding
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
-import com.example.ecommerceapp.utils.Constants.Companion.SUB_CATEGORY_OBJECT
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

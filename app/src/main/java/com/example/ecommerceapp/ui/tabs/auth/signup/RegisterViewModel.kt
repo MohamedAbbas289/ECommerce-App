@@ -1,21 +1,29 @@
 package com.example.ecommerceapp.ui.tabs.auth.signup
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.common.ResultWrapper
 import com.example.domain.model.SignupRequest
+import com.example.domain.usecase.SaveSessionUseCase
 import com.example.domain.usecase.SignupUseCase
+import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val signupUseCase: SignupUseCase
+    private val signupUseCase: SignupUseCase,
+    private val saveSessionUseCase: SaveSessionUseCase,
+    @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), RegisterContract.ViewModel {
 
-    private val _states = MutableLiveData<RegisterContract.State>()
+    private val _states = MutableStateFlow<RegisterContract.State>(
+        RegisterContract.State.Nothing()
+    )
     override val states = _states
 
     private val _events = MutableLiveData<RegisterContract.Event>()
@@ -41,25 +49,49 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun createUser() {
-        viewModelScope.launch {
-            try {
-                if (!validForm()) return@launch
-                val request = SignupRequest(
-                    name = userName.value,
-                    email = email.value,
-                    password = password.value,
-                    rePassword = passwordConfirmation.value,
-                    phone = phone.value
-                )
-                _states.postValue(RegisterContract.State.Loading("Loading..."))
-                val response = signupUseCase.invoke(request)
-                _states.postValue(RegisterContract.State.Success(response))
-                _events.postValue(RegisterContract.Event.NavigateToHome())
-            } catch (e: Exception) {
-                _states.postValue(
-                    RegisterContract.State.Error(e.localizedMessage ?: "Something went wrong")
-                )
-            }
+        viewModelScope.launch(ioDispatcher) {
+
+            if (!validForm()) return@launch
+            val request = SignupRequest(
+                name = userName.value,
+                email = email.value,
+                password = password.value,
+                rePassword = passwordConfirmation.value,
+                phone = phone.value
+            )
+            _states.emit(RegisterContract.State.Loading("Loading..."))
+            signupUseCase.invoke(request)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _states.emit(
+                                RegisterContract.State.Error(
+                                    response.error?.message ?: "Unknown error"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _states.emit(RegisterContract.State.Loading("Loading..."))
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _states.emit(
+                                RegisterContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Success -> {
+                            saveSessionUseCase.invoke(response.data)
+                            _states.emit(RegisterContract.State.Success(response.data))
+                            _events.postValue(RegisterContract.Event.NavigateToHome())
+                        }
+                    }
+                }
+
+
         }
     }
 

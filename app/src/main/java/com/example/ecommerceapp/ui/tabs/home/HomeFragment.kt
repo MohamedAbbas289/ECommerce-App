@@ -13,6 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.codebyashish.autoimageslider.Enums.ImageScaleType
 import com.codebyashish.autoimageslider.Models.ImageSlidesModel
+import com.example.domain.common.Constants.Companion.BRAND_OBJECT
+import com.example.domain.common.Constants.Companion.CATEGORY_OBJECT
+import com.example.domain.common.Constants.Companion.PRODUCT_OBJECT
+import com.example.domain.common.Constants.Companion.TV_SUB_CATEGORY_ID
 import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
@@ -23,10 +27,6 @@ import com.example.ecommerceapp.ui.tabs.categories.CategoriesFragment
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsAdapter
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
 import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsActivity
-import com.example.ecommerceapp.utils.Constants.Companion.BRAND_OBJECT
-import com.example.ecommerceapp.utils.Constants.Companion.CATEGORY_OBJECT
-import com.example.ecommerceapp.utils.Constants.Companion.PRODUCT_OBJECT
-import com.example.ecommerceapp.utils.Constants.Companion.TV_SUB_CATEGORY_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

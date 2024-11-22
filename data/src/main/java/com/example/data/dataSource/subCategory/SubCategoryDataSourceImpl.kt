@@ -14,12 +14,12 @@ class SubCategoryDataSourceImpl @Inject constructor(
 ) : SubCategoryDataSource {
     override suspend fun getSubCategories(category: Category)
             : Flow<ResultWrapper<List<SubCategory?>?>> {
-        val response = webServices.getSubCategories(category.id!!)
-        return safeApiCall {
-            response.data?.map {
+        val response = safeApiCall {
+            webServices.getSubCategories(category.id!!).data?.map {
                 it?.toSubCategory()
             }
         }
+        return response
     }
 
 }

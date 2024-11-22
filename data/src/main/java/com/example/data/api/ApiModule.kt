@@ -1,10 +1,16 @@
 package com.example.data.api
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
+import com.example.data.repository.SessionManagerRepositoryImpl
+import com.example.domain.repositories.sessionManager.SessionManagerRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -27,10 +33,12 @@ object ApiModule {
 
     @Provides
     fun provideOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        tokenInterceptor: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(tokenInterceptor)
             .build()
     }
 
@@ -54,5 +62,20 @@ object ApiModule {
     @Provides
     fun getWebServices(retrofit: Retrofit): WebServices {
         return retrofit.create(WebServices::class.java)
+    }
+
+    @Provides
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+    }
+
+    @Provides
+    fun provideSessionManager(sharedPreferences: SharedPreferences): SessionManagerRepository {
+        return SessionManagerRepositoryImpl(sharedPreferences)
+    }
+
+    @Provides
+    fun provideTokenInterceptor(sessionManagerRepository: SessionManagerRepository): Interceptor {
+        return TokenInterceptor(sessionManagerRepository)
     }
 }

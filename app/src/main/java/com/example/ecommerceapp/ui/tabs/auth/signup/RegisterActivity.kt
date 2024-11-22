@@ -3,17 +3,19 @@ package com.example.ecommerceapp.ui.tabs.auth.signup
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.domain.model.user.UserResponse
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.ActivityRegisterBinding
 import com.example.ecommerceapp.ui.tabs.HomeScreen
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
@@ -26,7 +28,11 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.states.observe(this, ::renderViewStates)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.states.collect { renderViewStates(it) }
+            }
+        }
         viewModel.events.observe(this, ::handleEvents)
     }
 
@@ -41,6 +47,7 @@ class RegisterActivity : AppCompatActivity() {
             is RegisterContract.State.Error -> showError(state.message)
             is RegisterContract.State.Loading -> showLoading(state.message)
             is RegisterContract.State.Success -> handleSuccess(state.userResponse)
+            is RegisterContract.State.Nothing -> return
         }
     }
 

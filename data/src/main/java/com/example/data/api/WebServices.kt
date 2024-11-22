@@ -1,12 +1,10 @@
 package com.example.data.api
 
-import com.example.data.model.BaseResponse
 import com.example.data.model.brand.BrandResponse
 import com.example.data.model.category.CategoriesResponse
 import com.example.data.model.product.ProductResponse
 import com.example.data.model.subCategory.SubCategoryResponse
 import com.example.data.model.user.AuthResponse
-import com.example.domain.model.Category
 import com.example.domain.model.LoginRequest
 import com.example.domain.model.SignupRequest
 import retrofit2.http.Body

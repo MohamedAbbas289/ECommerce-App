@@ -6,6 +6,7 @@ import com.example.domain.common.ResultWrapper
 import com.example.domain.exceptions.ParsingException
 import com.example.domain.exceptions.ServerError
 import com.example.domain.exceptions.ServerTimeOutException
+import com.example.domain.model.user.UserResponse
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import kotlinx.coroutines.Dispatchers
@@ -48,19 +49,39 @@ suspend fun <T> safeApiCall(
             }
 
             is HttpException -> {
-                val body = e.response()?.errorBody()?.string()
-                val response = Gson().fromJson(body, BaseResponse::class.java)
-                emit(
-                    ResultWrapper.ServerError(
-                        ServerError(
-                            response.statusMsg ?: "",
-                            response.message ?: "",
-                            e.code(),
-                            e
+                when (e.code()) {
+                    401 -> {
+                        val body = e.response()?.errorBody()?.string()
+                        val response = Gson().fromJson(body, UserResponse::class.java)
+                        emit(
+                            ResultWrapper.ServerError(
+                                ServerError(
+                                    response.statusMsg ?: "",
+                                    response.message ?: "",
+                                    e.code(),
+                                    e
+                                )
+                            )
                         )
-                    )
-                )
-                Log.d("GTAG", "HttpException: ${e.message}")
+                        Log.d("GTAG", "HTTP 401 Unauthorized: ${e.message()}")
+                    }
+
+                    else -> {
+                        val body = e.response()?.errorBody()?.string()
+                        val response = Gson().fromJson(body, BaseResponse::class.java)
+                        emit(
+                            ResultWrapper.ServerError(
+                                ServerError(
+                                    response.statusMsg ?: "",
+                                    response.message ?: "",
+                                    e.code(),
+                                    e
+                                )
+                            )
+                        )
+                        Log.d("GTAG", "HttpException: ${e.message}")
+                    }
+                }
             }
 
             is JsonSyntaxException -> {

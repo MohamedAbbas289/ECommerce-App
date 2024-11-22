@@ -12,11 +12,11 @@ class BrandDataSourceImpl @Inject constructor(
     private val webServices: WebServices
 ) : BrandDataSource {
     override suspend fun getBrands(): Flow<ResultWrapper<List<Brand?>?>> {
-        val response = webServices.getBrands()
-        return safeApiCall {
-            response.data?.map {
+        val response = safeApiCall {
+            webServices.getBrands().data?.map {
                 it?.toBrand()
             }
         }
+        return response
     }
 }

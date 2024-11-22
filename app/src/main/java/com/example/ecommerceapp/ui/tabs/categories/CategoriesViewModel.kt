@@ -48,28 +48,27 @@ class CategoriesViewModel @Inject constructor(
     }
 
     private fun loadSubCategories(category: Category) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher + coroutineExceptionHandler) {
             _state.emit(CategoriesContract.State.LoadingBySubCategory(message = "Loading"))
             subCategoriesUseCase.invoke(category)
                 .collect { response ->
                     when (response) {
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                CategoriesContract.State.SuccessBySubCategory(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success: ${response.data}")
+                        }
                         is ResultWrapper.Error -> {
                             _state.emit(
                                 CategoriesContract.State.ErrorBySubCategory(
-                                    response.error?.message ?: "Error",
+                                    response.error?.localizedMessage ?: "Error",
                                     category
                                 )
                             )
                             Log.d("GTAG", "error: ${response.error}")
-                        }
-
-                        is ResultWrapper.Loading -> {
-                            _state.emit(
-                                CategoriesContract.State.LoadingBySubCategory(
-                                    "Loading.."
-                                )
-                            )
-                            Log.d("GTAG", "loading")
                         }
 
                         is ResultWrapper.ServerError -> {
@@ -82,14 +81,16 @@ class CategoriesViewModel @Inject constructor(
                             Log.d("GTAG", "serverError: ${response.serverError}")
                         }
 
-                        is ResultWrapper.Success -> {
+                        is ResultWrapper.Loading -> {
                             _state.emit(
-                                CategoriesContract.State.SuccessBySubCategory(
-                                    response.data ?: listOf()
+                                CategoriesContract.State.LoadingBySubCategory(
+                                    "Loading.."
                                 )
                             )
-                            Log.d("GTAG", "success: ${response.data}")
+                            Log.d("GTAG", "loading")
                         }
+
+
                     }
                 }
 
@@ -107,7 +108,7 @@ class CategoriesViewModel @Inject constructor(
                                     response.data ?: listOf()
                                 )
                             )
-                            Log.d("GTAG", "success: ${response.data}")
+                            Log.d("GTAG", "success")
                         }
 
                         is ResultWrapper.Error -> {

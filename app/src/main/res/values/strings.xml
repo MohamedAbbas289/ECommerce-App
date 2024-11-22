@@ -35,4 +35,5 @@
     <string name="re_password">Re-Password</string>
     <string name="sign_up">Sign up</string>
     <string name="brands">Brands</string>
+    <string name="log_out">Log out</string>
 </resources>

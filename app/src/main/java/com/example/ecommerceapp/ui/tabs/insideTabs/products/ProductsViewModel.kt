@@ -77,7 +77,7 @@ class ProductsViewModel @Inject constructor(
                                     response.data ?: listOf()
                                 )
                             )
-                            Log.d("GTAG", "success: ${response.data}")
+                            Log.d("GTAG", "success")
                         }
                     }
                 }
@@ -124,7 +124,7 @@ class ProductsViewModel @Inject constructor(
                                     response.data ?: listOf()
                                 )
                             )
-                            Log.d("GTAG", "success: ${response.data}")
+                            Log.d("GTAG", "success")
                         }
                     }
                 }
@@ -174,7 +174,7 @@ class ProductsViewModel @Inject constructor(
                                     response.data ?: listOf()
                                 )
                             )
-                            Log.d("GTAG", "success: ${response.data}")
+                            Log.d("GTAG", "success")
                         }
                     }
                 }
