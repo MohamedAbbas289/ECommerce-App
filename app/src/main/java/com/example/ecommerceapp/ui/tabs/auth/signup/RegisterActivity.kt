@@ -45,7 +45,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun renderViewStates(state: RegisterContract.State) {
         when (state) {
             is RegisterContract.State.Error -> showError(state.message)
-            is RegisterContract.State.Loading -> showLoading(state.message)
+            is RegisterContract.State.Loading -> showLoading()
             is RegisterContract.State.Success -> handleSuccess(state.userResponse)
             is RegisterContract.State.Nothing -> return
         }
@@ -53,20 +53,16 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun handleSuccess(userResponse: UserResponse) {
         binding.progressBar.isVisible = false
-        binding.loadingMessage.isVisible = false
-        Toast.makeText(this, "Welcome ${userResponse.user}", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Welcome ${userResponse.user?.name}", Toast.LENGTH_LONG).show()
     }
 
 
-    private fun showLoading(message: String) {
+    private fun showLoading() {
         binding.progressBar.isVisible = true
-        binding.loadingMessage.isVisible = true
-        binding.loadingMessage.text = message
     }
 
     private fun showError(message: String) {
         binding.progressBar.isVisible = false
-        binding.loadingMessage.isVisible = false
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 

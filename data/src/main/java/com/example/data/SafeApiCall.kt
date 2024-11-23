@@ -50,6 +50,22 @@ suspend fun <T> safeApiCall(
 
             is HttpException -> {
                 when (e.code()) {
+                    400 -> {
+                        val body = e.response()?.errorBody()?.string()
+                        val response = Gson().fromJson(body, UserResponse::class.java)
+                        emit(
+                            ResultWrapper.ServerError(
+                                ServerError(
+                                    response.statusMsg ?: "",
+                                    response.errors?.msg ?: "",
+                                    e.code(),
+                                    e
+                                )
+                            )
+                        )
+                        Log.d("GTAG", "HTTP 400 Bad Request: ${e.message()}")
+                    }
+
                     401 -> {
                         val body = e.response()?.errorBody()?.string()
                         val response = Gson().fromJson(body, UserResponse::class.java)

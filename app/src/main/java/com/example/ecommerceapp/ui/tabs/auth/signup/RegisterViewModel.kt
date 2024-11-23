@@ -59,7 +59,7 @@ class RegisterViewModel @Inject constructor(
                 rePassword = passwordConfirmation.value,
                 phone = phone.value
             )
-            _states.emit(RegisterContract.State.Loading("Loading..."))
+            _states.emit(RegisterContract.State.Loading())
             signupUseCase.invoke(request)
                 .collect { response ->
                     when (response) {
@@ -72,7 +72,7 @@ class RegisterViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            _states.emit(RegisterContract.State.Loading("Loading..."))
+                            _states.emit(RegisterContract.State.Loading())
                         }
 
                         is ResultWrapper.ServerError -> {
