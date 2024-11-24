@@ -14,7 +14,7 @@ class RegisterContract {
     sealed class State {
         class Error(val message: String) : State()
         class Success(val userResponse: UserResponse) : State()
-        class Loading(val message: String) : State()
+        class Loading : State()
         class Nothing : State()
     }
 

@@ -1,5 +1,6 @@
 package com.example.data.model.user
 
+import com.example.domain.model.user.Errors
 import com.example.domain.model.user.UserResponse
 import com.google.gson.annotations.SerializedName
 
@@ -12,13 +13,17 @@ data class AuthResponse(
     val user: UserDto? = null,
 
     @field:SerializedName("token")
-    val token: String? = null
+    val token: String? = null,
+
+    @field:SerializedName("errors")
+    val errors: Errors? = null
 ) {
     fun toUserResponse(): UserResponse {
         return UserResponse(
             message = message,
             user = user?.toUser(),
-            token = token
+            token = token,
+            errors = errors
         )
     }
 }
