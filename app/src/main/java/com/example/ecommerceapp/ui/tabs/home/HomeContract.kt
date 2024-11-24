@@ -5,7 +5,6 @@ import com.example.domain.model.Brand
 import com.example.domain.model.Category
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -17,11 +16,16 @@ class HomeContract {
     }
 
     sealed class State {
-        class Error(val message: String) : State()
+        class ErrorByCategories(val message: String) : State()
+        class ErrorByProducts(val message: String) : State()
+        class ErrorByBrands(val message: String) : State()
         class Success(val categories: List<Category?>) : State()
         class SuccessByProducts(val products: List<Product?>) : State()
         class SuccessByBrands(val brands: List<Brand?>) : State()
-        class Loading : State()
+        class LoadingByCategories : State()
+        class LoadingByProducts : State()
+        class LoadingByBrands : State()
+        class Initial : State()
     }
 
     sealed class Action {

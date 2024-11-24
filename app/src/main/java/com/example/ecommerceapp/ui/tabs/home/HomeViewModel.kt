@@ -25,7 +25,7 @@ class HomeViewModel @Inject constructor(
     @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), HomeContract.ViewModel {
     private val _state = MutableStateFlow<HomeContract.State>(
-        HomeContract.State.Loading()
+        HomeContract.State.Initial()
     )
     override val states = _state
 
@@ -48,7 +48,7 @@ class HomeViewModel @Inject constructor(
                     when (response) {
                         is ResultWrapper.Error -> {
                             _state.emit(
-                                HomeContract.State.Error(
+                                HomeContract.State.ErrorByBrands(
                                     response.error?.message ?: "Error"
                                 )
                             )
@@ -56,13 +56,13 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            //_state.emit(HomeContract.State.Loading())
+                            _state.emit(HomeContract.State.LoadingByBrands())
                             Log.d("GTAG", "loading")
                         }
 
                         is ResultWrapper.ServerError -> {
                             _state.emit(
-                                HomeContract.State.Error(
+                                HomeContract.State.ErrorByBrands(
                                     response.serverError.serverMessage
                                 )
                             )
@@ -94,7 +94,7 @@ class HomeViewModel @Inject constructor(
                     when (response) {
                         is ResultWrapper.Error -> {
                             _state.emit(
-                                HomeContract.State.Error(
+                                HomeContract.State.ErrorByProducts(
                                     response.error?.localizedMessage ?: "Error"
                                 )
                             )
@@ -102,13 +102,13 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            //_state.emit(HomeContract.State.Loading())
+                            _state.emit(HomeContract.State.LoadingByProducts())
                             Log.d("GTAG", "loading: ")
                         }
 
                         is ResultWrapper.ServerError -> {
                             _state.emit(
-                                HomeContract.State.Error(
+                                HomeContract.State.ErrorByProducts(
                                     response.serverError.serverMessage
                                 )
                             )
@@ -136,7 +136,7 @@ class HomeViewModel @Inject constructor(
                     when (response) {
                         is ResultWrapper.Error -> {
                             _state.emit(
-                                HomeContract.State.Error(
+                                HomeContract.State.ErrorByCategories(
                                     response.error?.localizedMessage ?: "Error"
                                 )
                             )
@@ -144,7 +144,7 @@ class HomeViewModel @Inject constructor(
 
                         is ResultWrapper.ServerError -> {
                             _state.emit(
-                                HomeContract.State.Error(
+                                HomeContract.State.ErrorByCategories(
                                     response.serverError.serverMessage
                                 )
                             )
@@ -159,7 +159,7 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            //_state.emit(HomeContract.State.Loading())
+                            _state.emit(HomeContract.State.LoadingByCategories())
                         }
                     }
 
