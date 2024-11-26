@@ -16,22 +16,18 @@ class HomeContract {
     }
 
     sealed class State {
-        class ErrorByCategories(val message: String) : State()
-        class ErrorByProducts(val message: String) : State()
-        class ErrorByBrands(val message: String) : State()
+        class Error(val message: String) : State()
         class Success(val categories: List<Category?>) : State()
         class SuccessByProducts(val products: List<Product?>) : State()
         class SuccessByBrands(val brands: List<Brand?>) : State()
-        class LoadingByCategories : State()
+        class Loading : State()
         class LoadingByProducts : State()
         class LoadingByBrands : State()
         class Initial : State()
     }
 
     sealed class Action {
-        object LoadCategories : Action()
-        object LoadBrands : Action()
-        class LoadProducts(val subCategory: SubCategory) : Action()
+        class LoadAllData(val subCategory: SubCategory) : Action()
         class ProductClicked(val product: Product) : Action()
     }
 

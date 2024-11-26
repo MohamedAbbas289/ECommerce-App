@@ -91,6 +91,14 @@
                     app:layout_constraintTop_toBottomOf="@id/TV_txt"
                     tools:listitem="@layout/item_product" />
 
+                <ProgressBar
+                    android:id="@+id/progress_bar_products"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintStart_toEndOf="@id/TV_txt"
+                    app:layout_constraintTop_toBottomOf="@id/categories_recycler" />
+
                 <ImageView
                     android:id="@+id/foot_Ad"
                     android:layout_width="match_parent"
@@ -121,6 +129,14 @@
                     app:layout_constraintTop_toBottomOf="@id/brands_txt"
                     app:spanCount="2"
                     tools:listitem="@layout/item_category_home" />
+
+                <ProgressBar
+                    android:id="@+id/progress_bar_brands"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintStart_toEndOf="@id/brands_txt"
+                    app:layout_constraintTop_toBottomOf="@id/foot_Ad" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -13,6 +13,7 @@ import com.example.domain.usecase.GetProductsUseCase
 import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,109 +35,24 @@ class HomeViewModel @Inject constructor(
 
     override fun invokeAction(action: HomeContract.Action) {
         when (action) {
-            HomeContract.Action.LoadCategories -> loadCategories()
-            is HomeContract.Action.LoadProducts -> loadProducts(action.subCategory)
             is HomeContract.Action.ProductClicked -> navigateToProductDetails(action.product)
-            HomeContract.Action.LoadBrands -> loadBrands()
+            is HomeContract.Action.LoadAllData -> loadAllData(action.subCategory)
         }
     }
 
-    private fun loadBrands() {
+    private fun loadAllData(subCategory: SubCategory) {
         viewModelScope.launch(ioDispatcher) {
-            getBrandsUseCase.invoke()
-                .collect { response ->
+            _state.emit(HomeContract.State.Loading())
+            val categoriesDeferred = async { getCategoriesUseCase.invoke() }
+            val brandsDeferred = async { getBrandsUseCase.invoke() }
+            val productsDeferred =
+                async { getProductsUseCase.invokeProductsBySubCategory(subCategory) }
+            try {
+                categoriesDeferred.await().collect { response ->
                     when (response) {
                         is ResultWrapper.Error -> {
                             _state.emit(
-                                HomeContract.State.ErrorByBrands(
-                                    response.error?.message ?: "Error"
-                                )
-                            )
-                            Log.d("GTAG", "error: ${response.error?.message}")
-                        }
-
-                        is ResultWrapper.Loading -> {
-                            _state.emit(HomeContract.State.LoadingByBrands())
-                            Log.d("GTAG", "loading")
-                        }
-
-                        is ResultWrapper.ServerError -> {
-                            _state.emit(
-                                HomeContract.State.ErrorByBrands(
-                                    response.serverError.serverMessage
-                                )
-                            )
-                            Log.d("GTAG", "server error: ${response.serverError.serverMessage}")
-                        }
-
-                        is ResultWrapper.Success -> {
-                            _state.emit(
-                                HomeContract.State.SuccessByBrands(
-                                    response.data ?: listOf()
-                                )
-                            )
-                            Log.d("GTAG", "success: ${response.data}")
-                        }
-                    }
-                }
-
-        }
-    }
-
-    private fun navigateToProductDetails(product: Product) {
-        _event.postValue(HomeContract.Event.NavigateToProductsDetails(product))
-    }
-
-    private fun loadProducts(subCategory: SubCategory) {
-        viewModelScope.launch(ioDispatcher) {
-            getProductsUseCase.invokeProductsBySubCategory(subCategory)
-                .collect { response ->
-                    when (response) {
-                        is ResultWrapper.Error -> {
-                            _state.emit(
-                                HomeContract.State.ErrorByProducts(
-                                    response.error?.localizedMessage ?: "Error"
-                                )
-                            )
-                            Log.d("GTAG", "error: ${response.error?.localizedMessage}")
-                        }
-
-                        is ResultWrapper.Loading -> {
-                            _state.emit(HomeContract.State.LoadingByProducts())
-                            Log.d("GTAG", "loading: ")
-                        }
-
-                        is ResultWrapper.ServerError -> {
-                            _state.emit(
-                                HomeContract.State.ErrorByProducts(
-                                    response.serverError.serverMessage
-                                )
-                            )
-                            Log.d("GTAG", "server error: ${response.serverError.serverMessage}")
-                        }
-
-                        is ResultWrapper.Success -> {
-                            _state.emit(
-                                HomeContract.State.SuccessByProducts(
-                                    response.data ?: listOf()
-                                )
-                            )
-                            Log.d("GTAG", "success: ${response.data}")
-                        }
-                    }
-
-                }
-        }
-    }
-
-    private fun loadCategories() {
-        viewModelScope.launch(ioDispatcher) {
-            getCategoriesUseCase.invoke()
-                .collect { response ->
-                    when (response) {
-                        is ResultWrapper.Error -> {
-                            _state.emit(
-                                HomeContract.State.ErrorByCategories(
+                                HomeContract.State.Error(
                                     response.error?.localizedMessage ?: "Error"
                                 )
                             )
@@ -144,7 +60,7 @@ class HomeViewModel @Inject constructor(
 
                         is ResultWrapper.ServerError -> {
                             _state.emit(
-                                HomeContract.State.ErrorByCategories(
+                                HomeContract.State.Error(
                                     response.serverError.serverMessage
                                 )
                             )
@@ -159,12 +75,91 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            _state.emit(HomeContract.State.LoadingByCategories())
+                            //_state.emit(HomeContract.State.LoadingByCategories())
                         }
                     }
-
                 }
 
+                brandsDeferred.await().collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.error?.message ?: "Error"
+                                )
+                            )
+                            Log.d("GTAG", "error: ${response.error?.message}")
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(HomeContract.State.LoadingByBrands())
+                            Log.d("GTAG", "loading")
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                            Log.d("GTAG", "server error: ${response.serverError.serverMessage}")
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                HomeContract.State.SuccessByBrands(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success")
+                        }
+                    }
+                }
+
+                productsDeferred.await().collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.error?.localizedMessage ?: "Error"
+                                )
+                            )
+                            Log.d("GTAG", "error: ${response.error?.localizedMessage}")
+                        }
+
+                        is ResultWrapper.Loading -> {
+                            _state.emit(HomeContract.State.LoadingByProducts())
+                            Log.d("GTAG", "loading: ")
+                        }
+
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                HomeContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                            Log.d("GTAG", "server error: ${response.serverError.serverMessage}")
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                HomeContract.State.SuccessByProducts(
+                                    response.data ?: listOf()
+                                )
+                            )
+                            Log.d("GTAG", "success")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.d("GTAG", " async error: ${e.message}")
+            }
         }
     }
+
+    private fun navigateToProductDetails(product: Product) {
+        _event.postValue(HomeContract.Event.NavigateToProductsDetails(product))
+    }
+
+
 }

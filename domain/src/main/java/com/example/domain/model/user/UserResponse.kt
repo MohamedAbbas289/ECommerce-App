@@ -8,6 +8,6 @@ data class UserResponse(
     val statusMsg: String? = null,
     val message: String? = null,
     val user: User? = null,
-    val token: String? = null,
+    var token: String? = null,
     val errors: Errors? = null
 ) : Parcelable

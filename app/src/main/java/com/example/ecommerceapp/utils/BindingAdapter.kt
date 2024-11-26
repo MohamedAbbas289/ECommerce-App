@@ -22,6 +22,7 @@ fun bindImageWithUrl(
 ) {
     Glide.with(imageView)
         .load(url)
+        .error(R.drawable.women_fashion_img)
         .placeholder(R.drawable.ic_launcher_foreground)
         .into(imageView)
 

@@ -6,12 +6,14 @@ import com.example.data.repository.category.CategoryRepositoryImpl
 import com.example.data.repository.login.LoginRepositoryImpl
 import com.example.data.repository.product.ProductRepositoryImpl
 import com.example.data.repository.signup.SignupRepositoryImpl
+import com.example.data.repository.updateProfile.UpdateProfileRepositoryImpl
 import com.example.domain.repositories.brands.BrandsRepository
 import com.example.domain.repositories.categories.CategoriesRepository
 import com.example.domain.repositories.login.LoginRepository
 import com.example.domain.repositories.products.ProductsRepository
 import com.example.domain.repositories.signup.SignupRepository
 import com.example.domain.repositories.subCategories.SubCategoriesRepository
+import com.example.domain.repositories.updateProfile.UpdateProfileRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -49,4 +51,10 @@ abstract class Di {
     abstract fun bindLoginRepository(
         loginRepositoryImpl: LoginRepositoryImpl
     ): LoginRepository
+
+    @Binds
+    abstract fun bindUpdateProfileRepository(
+        updateProfileRepositoryImpl: UpdateProfileRepositoryImpl
+    ): UpdateProfileRepository
+
 }

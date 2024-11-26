@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentProfileBinding
 import com.example.ecommerceapp.ui.tabs.auth.login.LoginActivity
+import com.example.ecommerceapp.ui.tabs.profile.userInfo.UserInfoFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -32,6 +34,13 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        initObservers()
+    }
+
+    private fun initObservers() {
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
     }
 
     private fun initViews() {
@@ -39,6 +48,20 @@ class ProfileFragment : Fragment() {
             viewModel.logout()
             navigateToLogin()
         }
+
+        binding.myInformationBtn.setOnClickListener {
+            navigateToMyInformation()
+        }
+    }
+
+    private fun navigateToMyInformation() {
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
+            .hide(this)
+            .add(R.id.fragment_container, UserInfoFragment())
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun navigateToLogin() {
