@@ -14,18 +14,109 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
+        android:background="@color/white"
         tools:context=".ui.tabs.profile.ProfileFragment">
+
+        <TextView
+            android:id="@+id/profile_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/profile_img"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/profile_edit_ic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_txt" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/my_information_btn"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:backgroundTint="@color/grey"
+            android:elevation="16dp"
+            android:text="@string/my_information"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:cornerRadius="0dp"
+            app:icon="@drawable/my_info_ic"
+            app:iconSize="30dp"
+            app:iconTint="@color/primary_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_img"
+            app:layout_constraintVertical_bias="0.1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/shipping_address_btn"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:backgroundTint="@color/grey"
+            android:elevation="16dp"
+            android:text="@string/shipping_addresses"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:cornerRadius="0dp"
+            app:icon="@drawable/location_ic"
+            app:iconSize="30dp"
+            app:iconTint="@color/primary_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_img"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/settings_btn"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:backgroundTint="@color/grey"
+            android:elevation="16dp"
+            android:text="@string/settings"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:cornerRadius="0dp"
+            app:icon="@drawable/settings_ic"
+            app:iconSize="30dp"
+            app:iconTint="@color/primary_color"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profile_img"
+            app:layout_constraintVertical_bias="0.5" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logout_btn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/primary_color"
+            android:layout_height="70dp"
+            android:backgroundTint="@color/red"
+            android:elevation="16dp"
             android:text="@string/log_out"
+            android:textColor="@color/white"
             android:textSize="20sp"
-            app:cornerRadius="10dp"
+            app:cornerRadius="0dp"
+            app:icon="@drawable/logout_ic"
+            app:iconSize="30dp"
+            app:iconTint="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/profile_img"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.7" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

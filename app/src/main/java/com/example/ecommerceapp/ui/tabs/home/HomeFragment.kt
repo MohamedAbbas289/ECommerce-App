@@ -69,17 +69,35 @@ class HomeFragment : Fragment() {
         when (state) {
             is HomeContract.State.Error -> showError(state.message)
             is HomeContract.State.Loading -> showLoading()
+            is HomeContract.State.LoadingByProducts -> showProductsLoading()
+            is HomeContract.State.LoadingByBrands -> showBrandsLoading()
             is HomeContract.State.Success -> bindCategories(state.categories)
             is HomeContract.State.SuccessByProducts -> bindProducts(state.products)
             is HomeContract.State.SuccessByBrands -> bindBrands(state.brands)
             is HomeContract.State.Initial -> return
+
         }
+    }
+
+    private fun showBrandsLoading() {
+        binding.successView.isVisible = true
+        binding.errorView.isVisible = false
+        binding.loadingView.isVisible = false
+        binding.progressBarBrands.isVisible = true
+    }
+
+    private fun showProductsLoading() {
+        binding.successView.isVisible = true
+        binding.errorView.isVisible = false
+        binding.loadingView.isVisible = false
+        binding.progressBarProducts.isVisible = true
     }
 
     private fun bindBrands(brands: List<Brand?>) {
         binding.successView.isVisible = true
         binding.errorView.isVisible = false
         binding.loadingView.isVisible = false
+        binding.progressBarBrands.isVisible = false
         brandsAdapter.bindBrands(brands)
     }
 
@@ -87,6 +105,7 @@ class HomeFragment : Fragment() {
         binding.successView.isVisible = true
         binding.errorView.isVisible = false
         binding.loadingView.isVisible = false
+        binding.progressBarProducts.isVisible = false
         productsAdapter.bindProducts(products)
     }
 

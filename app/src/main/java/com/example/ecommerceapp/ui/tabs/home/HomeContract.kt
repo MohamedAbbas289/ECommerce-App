@@ -21,6 +21,8 @@ class HomeContract {
         class SuccessByProducts(val products: List<Product?>) : State()
         class SuccessByBrands(val brands: List<Brand?>) : State()
         class Loading : State()
+        class LoadingByProducts : State()
+        class LoadingByBrands : State()
         class Initial : State()
     }
 

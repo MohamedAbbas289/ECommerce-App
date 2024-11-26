@@ -64,6 +64,7 @@ class CategoriesFragment : Fragment() {
                     Log.d("GTAG", "categoryClicked: $it")
                     Glide.with(this)
                         .load(it.image)
+                        .error(R.drawable.women_fashion_img)
                         .placeholder(R.drawable.place_holder_img)
                         .into(binding.categoryImage)
                     binding.categoryName.text = it.name

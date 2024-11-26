@@ -21,7 +21,6 @@ import java.net.SocketTimeoutException
 suspend fun <T> safeApiCall(
     apiCall: suspend () -> T
 ): Flow<ResultWrapper<T>> = flow<ResultWrapper<T>> {
-    emit(ResultWrapper.Loading)
 
     val result = apiCall.invoke()
     emit(ResultWrapper.Success(result))

@@ -92,7 +92,7 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            //_state.emit(HomeContract.State.LoadingByBrands())
+                            _state.emit(HomeContract.State.LoadingByBrands())
                             Log.d("GTAG", "loading")
                         }
 
@@ -128,7 +128,7 @@ class HomeViewModel @Inject constructor(
                         }
 
                         is ResultWrapper.Loading -> {
-                            //_state.emit(HomeContract.State.LoadingByProducts())
+                            _state.emit(HomeContract.State.LoadingByProducts())
                             Log.d("GTAG", "loading: ")
                         }
 

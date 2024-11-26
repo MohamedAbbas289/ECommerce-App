@@ -7,9 +7,11 @@ import com.example.data.model.subCategory.SubCategoryResponse
 import com.example.data.model.user.AuthResponse
 import com.example.domain.model.LoginRequest
 import com.example.domain.model.SignupRequest
+import com.example.domain.model.UpdateProfileRequest
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 interface WebServices {
@@ -36,5 +38,11 @@ interface WebServices {
 
     @POST("api/v1/auth/signin")
     suspend fun login(@Body loginRequest: LoginRequest): AuthResponse
+
+    @PUT("api/v1/users/updateMe/")
+    suspend fun updateProfile(
+        @Body updateProfileRequest: UpdateProfileRequest,
+        @Query("token") token: String
+    ): AuthResponse
 
 }
