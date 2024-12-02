@@ -5,11 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.common.ResultWrapper
+import com.example.domain.model.AddToWishListRequest
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
+import com.example.domain.usecase.AddProductToWishlistUseCase
 import com.example.domain.usecase.GetBrandsUseCase
 import com.example.domain.usecase.GetCategoriesUseCase
 import com.example.domain.usecase.GetProductsUseCase
+import com.example.domain.usecase.GetSessionUserUseCase
+import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsContract
 import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -23,6 +27,8 @@ class HomeViewModel @Inject constructor(
     private val getCategoriesUseCase: GetCategoriesUseCase,
     private val getProductsUseCase: GetProductsUseCase,
     private val getBrandsUseCase: GetBrandsUseCase,
+    private val addProductToWishlistUseCase: AddProductToWishlistUseCase,
+    private val getSessionUserUseCase: GetSessionUserUseCase,
     @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), HomeContract.ViewModel {
     private val _state = MutableStateFlow<HomeContract.State>(
@@ -37,6 +43,47 @@ class HomeViewModel @Inject constructor(
         when (action) {
             is HomeContract.Action.ProductClicked -> navigateToProductDetails(action.product)
             is HomeContract.Action.LoadAllData -> loadAllData(action.subCategory)
+            is HomeContract.Action.AddToWishlistClicked -> addProductToWishlist(action.product)
+        }
+    }
+
+    private fun addProductToWishlist(product: Product) {
+        viewModelScope.launch(ioDispatcher) {
+            _state.emit(HomeContract.State.AddToWishlistLoading())
+            val userResponse = getSessionUserUseCase.invoke()
+            val addToWishlistRequest = AddToWishListRequest(product.id)
+            addProductToWishlistUseCase.invoke(
+                addToWishlistRequest,
+                userResponse?.token!!
+            ).collect { response ->
+                when (response) {
+                    is ResultWrapper.Error -> {
+                        _state.emit(
+                            HomeContract.State.AddToWishlistError(
+                                response.error?.message ?: "Something went wrong"
+                            )
+                        )
+                    }
+
+                    is ResultWrapper.Loading -> TODO()
+                    is ResultWrapper.ServerError -> {
+                        _state.emit(
+                            HomeContract.State.AddToWishlistError(
+                                response.serverError.serverMessage
+                            )
+                        )
+                    }
+
+                    is ResultWrapper.Success -> {
+                        _state.emit(
+                            HomeContract.State.AddToWishlistSuccess(
+                                product,
+                                response.data.message ?: "Product added successfully"
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 

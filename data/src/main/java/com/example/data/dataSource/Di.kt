@@ -7,6 +7,7 @@ import com.example.data.dataSource.product.ProductDataSourceImpl
 import com.example.data.dataSource.signup.SignupDataSourceImpl
 import com.example.data.dataSource.subCategory.SubCategoryDataSourceImpl
 import com.example.data.dataSource.updateProfile.UpdateProfileDataSourceImpl
+import com.example.data.dataSource.wishlist.WishlistDataSourceImpl
 import com.example.data.dataSourceContract.BrandDataSource
 import com.example.data.dataSourceContract.CategoryDataSource
 import com.example.data.dataSourceContract.LoginDataSource
@@ -14,6 +15,7 @@ import com.example.data.dataSourceContract.ProductDataSource
 import com.example.data.dataSourceContract.SignupDataSource
 import com.example.data.dataSourceContract.SubCategoryDataSource
 import com.example.data.dataSourceContract.UpdateProfileDataSource
+import com.example.data.dataSourceContract.WishlistDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -56,4 +58,9 @@ abstract class Di {
     abstract fun bindUpdateProfileDataSource(
         updateProfileDataSourceImpl: UpdateProfileDataSourceImpl
     ): UpdateProfileDataSource
+
+    @Binds
+    abstract fun bindWishlistDataSource(
+        wishlistDataSourceImpl: WishlistDataSourceImpl
+    ): WishlistDataSource
 }
