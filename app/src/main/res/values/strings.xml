@@ -42,4 +42,5 @@
     <string name="my_information">My Information</string>
     <string name="phone_number">Phone Number</string>
     <string name="update_profile">Update Profile</string>
+    <string name="account">Account</string>
 </resources>
