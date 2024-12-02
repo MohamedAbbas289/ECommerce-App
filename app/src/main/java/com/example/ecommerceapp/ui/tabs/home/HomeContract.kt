@@ -23,12 +23,16 @@ class HomeContract {
         class Loading : State()
         class LoadingByProducts : State()
         class LoadingByBrands : State()
+        class AddToWishlistLoading : State()
+        class AddToWishlistSuccess(val product: Product, val message: String) : State()
+        class AddToWishlistError(val message: String) : State()
         class Initial : State()
     }
 
     sealed class Action {
         class LoadAllData(val subCategory: SubCategory) : Action()
         class ProductClicked(val product: Product) : Action()
+        class AddToWishlistClicked(val product: Product) : Action()
     }
 
     sealed class Event {

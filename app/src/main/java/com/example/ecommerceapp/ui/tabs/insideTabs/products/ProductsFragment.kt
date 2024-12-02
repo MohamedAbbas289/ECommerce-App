@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -91,13 +92,41 @@ class ProductsFragment : Fragment() {
             )
 
             is ProductsContract.State.ErrorByBrand -> showErrorByBrand(state.message, state.brand)
+            is ProductsContract.State.ErrorAddToWishlist -> showErrorAddToWishlist(state.message)
+            is ProductsContract.State.LoadingAddToWishlist -> showLoadingAddToWishlist()
+            is ProductsContract.State.SuccessAddToWishlist -> handleSuccessAddToWishlist(state.message)
         }
+    }
+
+    private fun handleSuccessAddToWishlist(message: String) {
+        binding.addToWishlistLoadingView.isVisible = false
+        binding.successView.isVisible = true
+        binding.loadingView.isVisible = false
+        binding.errorView.isVisible = false
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLoadingAddToWishlist() {
+        Log.d("GTAG", "showLoadingAddToWishlist")
+        binding.successView.isVisible = true
+        binding.loadingView.isVisible = false
+        binding.errorView.isVisible = false
+        binding.addToWishlistLoadingView.isVisible = true
+    }
+
+    private fun showErrorAddToWishlist(message: String) {
+        binding.addToWishlistLoadingView.isVisible = false
+        binding.successView.isVisible = true
+        binding.loadingView.isVisible = false
+        binding.errorView.isVisible = false
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showErrorByBrand(message: String, brand: Brand) {
         binding.successView.isVisible = false
         binding.loadingView.isVisible = false
         binding.errorView.isVisible = true
+        binding.addToWishlistLoadingView.isVisible = false
         binding.errorText.text = message
         binding.tryAgainBtn.setOnClickListener {
             viewModel.invokeAction(ProductsContract.Action.LoadProductsByBrand(brand))
@@ -108,6 +137,7 @@ class ProductsFragment : Fragment() {
         binding.successView.isVisible = false
         binding.loadingView.isVisible = false
         binding.errorView.isVisible = true
+        binding.addToWishlistLoadingView.isVisible = false
         binding.errorText.text = message
         binding.tryAgainBtn.setOnClickListener {
             viewModel.invokeAction(ProductsContract.Action.LoadProductsByCategory(category))
@@ -118,6 +148,7 @@ class ProductsFragment : Fragment() {
         binding.successView.isVisible = false
         binding.loadingView.isVisible = true
         binding.errorView.isVisible = false
+        binding.addToWishlistLoadingView.isVisible = false
         binding.errorText.text = message
     }
 
@@ -125,6 +156,7 @@ class ProductsFragment : Fragment() {
         binding.successView.isVisible = false
         binding.loadingView.isVisible = false
         binding.errorView.isVisible = true
+        binding.addToWishlistLoadingView.isVisible = false
         binding.errorText.text = message
         binding.tryAgainBtn.setOnClickListener {
             viewModel.invokeAction(ProductsContract.Action.LoadProductsBySubCategory(subCategory))
@@ -135,6 +167,7 @@ class ProductsFragment : Fragment() {
         binding.successView.isVisible = true
         binding.loadingView.isVisible = false
         binding.errorView.isVisible = false
+        binding.addToWishlistLoadingView.isVisible = false
         productsAdapter.bindProducts(products)
     }
 
@@ -158,6 +191,12 @@ class ProductsFragment : Fragment() {
                 }
             }
         binding.productsRecycler.adapter = productsAdapter
-    }
 
+        productsAdapter.onAddToWishlistClickListener =
+            ProductsAdapter.OnAddToWishlistClickListener { position, product ->
+                product?.let {
+                    viewModel.invokeAction(ProductsContract.Action.AddToWishlistClicked(it))
+                }
+            }
+    }
 }

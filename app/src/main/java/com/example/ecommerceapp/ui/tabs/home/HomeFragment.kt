@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -75,8 +76,27 @@ class HomeFragment : Fragment() {
             is HomeContract.State.SuccessByProducts -> bindProducts(state.products)
             is HomeContract.State.SuccessByBrands -> bindBrands(state.brands)
             is HomeContract.State.Initial -> return
-
+            is HomeContract.State.AddToWishlistError -> handleAddToWishlistError(state.message)
+            is HomeContract.State.AddToWishlistLoading -> handleAddToWishlistLoading()
+            is HomeContract.State.AddToWishlistSuccess -> handleAddToWishlistSuccess(
+                state.product,
+                state.message
+            )
         }
+    }
+
+    private fun handleAddToWishlistSuccess(product: Product, message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        binding.progressBar.isVisible = false
+    }
+
+    private fun handleAddToWishlistLoading() {
+        binding.progressBar.isVisible = true
+    }
+
+    private fun handleAddToWishlistError(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        binding.progressBar.isVisible = false
     }
 
     private fun showBrandsLoading() {
@@ -145,6 +165,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initViews() {
+        binding.progressBar.isVisible = false
         bindAdsImages()
         binding.viewAllTxt.setOnClickListener {
             navigateToCategories()
@@ -153,6 +174,13 @@ class HomeFragment : Fragment() {
             ProductsAdapter.OnItemClickListener { position, product ->
                 product?.let {
                     viewModel.invokeAction(HomeContract.Action.ProductClicked(it))
+                }
+            }
+
+        productsAdapter.onAddToWishlistClickListener =
+            ProductsAdapter.OnAddToWishlistClickListener { position, product ->
+                product?.let {
+                    viewModel.invokeAction(HomeContract.Action.AddToWishlistClicked(it))
                 }
             }
 

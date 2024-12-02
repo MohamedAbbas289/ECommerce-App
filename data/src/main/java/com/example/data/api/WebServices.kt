@@ -5,13 +5,18 @@ import com.example.data.model.category.CategoriesResponse
 import com.example.data.model.product.ProductResponse
 import com.example.data.model.subCategory.SubCategoryResponse
 import com.example.data.model.user.AuthResponse
+import com.example.data.model.wishlist.WishlistResponse
+import com.example.data.model.wishlist.BaseWishlistResponseDto
+import com.example.domain.model.AddToWishListRequest
 import com.example.domain.model.LoginRequest
 import com.example.domain.model.SignupRequest
 import com.example.domain.model.UpdateProfileRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface WebServices {
@@ -44,5 +49,20 @@ interface WebServices {
         @Body updateProfileRequest: UpdateProfileRequest,
         @Query("token") token: String
     ): AuthResponse
+
+    @POST("api/v1/wishlist")
+    suspend fun addProductToWishlist(
+        @Body addToWishListRequest: AddToWishListRequest,
+        @Query("token") token: String
+    ): BaseWishlistResponseDto
+
+    @GET("api/v1/wishlist")
+    suspend fun getWishlist(@Query("token") token: String): WishlistResponse
+
+    @DELETE("api/v1/wishlist/{id}")
+    suspend fun removeProductFromWishlist(
+        @Path("id") productId: String,
+        @Query("token") token: String
+    ): BaseWishlistResponseDto
 
 }
