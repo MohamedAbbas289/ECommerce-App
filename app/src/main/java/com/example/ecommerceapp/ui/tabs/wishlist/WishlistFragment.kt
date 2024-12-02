@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.domain.model.Product
-import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentWishlistBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -109,7 +108,6 @@ class WishlistFragment : Fragment() {
             WishlistProductsAdapter.OnRemoveFromWishlistClickListener { product, position ->
                 viewModel.invokeAction(WishlistContract.Action.RemoveFromWishlist(product.id!!))
                 wishlistAdapter.removeItem(position)
-                //TODO: Remove from wishlist
             }
         binding.wishlistProductsRecycler.adapter = wishlistAdapter
     }
