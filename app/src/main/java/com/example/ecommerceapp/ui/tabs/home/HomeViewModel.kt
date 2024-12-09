@@ -5,15 +5,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.common.ResultWrapper
+import com.example.domain.model.AddToCartRequest
 import com.example.domain.model.AddToWishListRequest
 import com.example.domain.model.Product
 import com.example.domain.model.SubCategory
 import com.example.domain.usecase.AddProductToWishlistUseCase
+import com.example.domain.usecase.AddToCartUseCase
 import com.example.domain.usecase.GetBrandsUseCase
 import com.example.domain.usecase.GetCategoriesUseCase
 import com.example.domain.usecase.GetProductsUseCase
 import com.example.domain.usecase.GetSessionUserUseCase
-import com.example.ecommerceapp.ui.tabs.insideTabs.products.productDetails.ProductDetailsContract
 import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,6 +30,7 @@ class HomeViewModel @Inject constructor(
     private val getBrandsUseCase: GetBrandsUseCase,
     private val addProductToWishlistUseCase: AddProductToWishlistUseCase,
     private val getSessionUserUseCase: GetSessionUserUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), HomeContract.ViewModel {
     private val _state = MutableStateFlow<HomeContract.State>(
@@ -44,12 +46,47 @@ class HomeViewModel @Inject constructor(
             is HomeContract.Action.ProductClicked -> navigateToProductDetails(action.product)
             is HomeContract.Action.LoadAllData -> loadAllData(action.subCategory)
             is HomeContract.Action.AddToWishlistClicked -> addProductToWishlist(action.product)
+            is HomeContract.Action.AddToCartClicked -> addProductToCart(action.product)
+        }
+    }
+
+    private fun addProductToCart(product: Product) {
+        viewModelScope.launch(ioDispatcher) {
+            _state.emit(HomeContract.State.LoadingAdd())
+            val userResponse = getSessionUserUseCase.invoke()
+            val addToCartReq = AddToCartRequest(product.id)
+            addToCartUseCase(addToCartReq, userResponse?.token!!)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                HomeContract.State.ErrorAdd(
+                                    response.error?.message ?: "Something went wrong"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> TODO()
+                        is ResultWrapper.ServerError -> {
+                            response.serverError.serverMessage
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                HomeContract.State.SuccessAdd(
+                                    product,
+                                    response.data.message ?: "Product added successfully to cart"
+                                )
+                            )
+                        }
+                    }
+                }
         }
     }
 
     private fun addProductToWishlist(product: Product) {
         viewModelScope.launch(ioDispatcher) {
-            _state.emit(HomeContract.State.AddToWishlistLoading())
+            _state.emit(HomeContract.State.LoadingAdd())
             val userResponse = getSessionUserUseCase.invoke()
             val addToWishlistRequest = AddToWishListRequest(product.id)
             addProductToWishlistUseCase.invoke(
@@ -59,7 +96,7 @@ class HomeViewModel @Inject constructor(
                 when (response) {
                     is ResultWrapper.Error -> {
                         _state.emit(
-                            HomeContract.State.AddToWishlistError(
+                            HomeContract.State.ErrorAdd(
                                 response.error?.message ?: "Something went wrong"
                             )
                         )
@@ -68,7 +105,7 @@ class HomeViewModel @Inject constructor(
                     is ResultWrapper.Loading -> TODO()
                     is ResultWrapper.ServerError -> {
                         _state.emit(
-                            HomeContract.State.AddToWishlistError(
+                            HomeContract.State.ErrorAdd(
                                 response.serverError.serverMessage
                             )
                         )
@@ -76,7 +113,7 @@ class HomeViewModel @Inject constructor(
 
                     is ResultWrapper.Success -> {
                         _state.emit(
-                            HomeContract.State.AddToWishlistSuccess(
+                            HomeContract.State.SuccessAdd(
                                 product,
                                 response.data.message ?: "Product added successfully"
                             )

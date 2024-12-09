@@ -1,16 +1,20 @@
 package com.example.data.api
 
 import com.example.data.model.brand.BrandResponse
+import com.example.data.model.cart.BaseCartResponseDto
+import com.example.data.model.cart.addToCart.AddToCartResponseDto
 import com.example.data.model.category.CategoriesResponse
 import com.example.data.model.product.ProductResponse
 import com.example.data.model.subCategory.SubCategoryResponse
 import com.example.data.model.user.AuthResponse
-import com.example.data.model.wishlist.WishlistResponse
 import com.example.data.model.wishlist.BaseWishlistResponseDto
+import com.example.data.model.wishlist.WishlistResponse
+import com.example.domain.model.AddToCartRequest
 import com.example.domain.model.AddToWishListRequest
 import com.example.domain.model.LoginRequest
 import com.example.domain.model.SignupRequest
 import com.example.domain.model.UpdateProfileRequest
+import com.example.domain.model.UpdateQuantityRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -64,5 +68,30 @@ interface WebServices {
         @Path("id") productId: String,
         @Query("token") token: String
     ): BaseWishlistResponseDto
+
+    @POST("api/v1/cart")
+    suspend fun addToCart(
+        @Body addToCartRequest: AddToCartRequest,
+        @Query("token") token: String
+    ): AddToCartResponseDto
+
+    @PUT("api/v1/cart/{id}")
+    suspend fun updateCartProductQuantity(
+        @Path("id") productId: String,
+        @Body updateQuantityRequest: UpdateQuantityRequest,
+        @Query("token") token: String
+    ): BaseCartResponseDto
+
+    @GET("api/v1/cart")
+    suspend fun getUserCart(@Query("token") token: String): BaseCartResponseDto
+
+    @DELETE("api/v1/cart/{id}")
+    suspend fun removeProductFromCart(
+        @Path("id") productId: String,
+        @Query("token") token: String
+    ): BaseCartResponseDto
+
+    @DELETE("api/v1/cart")
+    suspend fun clearCart(@Query("token") token: String): BaseCartResponseDto
 
 }

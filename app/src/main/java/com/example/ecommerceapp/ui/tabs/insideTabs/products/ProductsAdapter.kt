@@ -16,6 +16,11 @@ class ProductsAdapter(var products: List<Product?>?) :
             } else {
                 binding.addWishList.setImageResource(R.drawable.ic_add_to_wishlist)
             }
+//            if (product?.isInCart == true){
+//                binding.addToCart.isVisible = false
+//            }else{
+//                binding.addToCart.isVisible = true
+//            }
             binding.product = product
             binding.executePendingBindings()
         }
@@ -41,6 +46,11 @@ class ProductsAdapter(var products: List<Product?>?) :
             products!![position]?.isInWishlist = true
             notifyItemChanged(position)
         }
+        holder.binding.addToCart.setOnClickListener {
+            onAddToCartClickListener?.onAddToCartClick(position, products!![position])
+            products!![position]?.isInCart = true
+            notifyItemChanged(position)
+        }
 
     }
 
@@ -59,5 +69,11 @@ class ProductsAdapter(var products: List<Product?>?) :
 
     fun interface OnAddToWishlistClickListener {
         fun onAddToWishlistClick(position: Int, product: Product?)
+    }
+
+    var onAddToCartClickListener: OnAddToCartClickListener? = null
+
+    fun interface OnAddToCartClickListener {
+        fun onAddToCartClick(position: Int, product: Product?)
     }
 }

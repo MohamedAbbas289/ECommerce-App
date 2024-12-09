@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.ActivityHomeScreenBinding
+import com.example.ecommerceapp.ui.tabs.cart.CartFragment
 import com.example.ecommerceapp.ui.tabs.categories.CategoriesFragment
 import com.example.ecommerceapp.ui.tabs.home.HomeFragment
 import com.example.ecommerceapp.ui.tabs.profile.ProfileFragment
@@ -29,6 +30,15 @@ class HomeScreen : AppCompatActivity(), OnItemSelectedListener {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home_screen)
         binding.bottomNavHome.setOnItemSelectedListener(this)
         binding.bottomNavHome.selectedItemId = R.id.navigation_home
+        binding.icCart.setOnClickListener {
+            binding.topBar.visibility = View.GONE
+            supportFragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
+                .add(R.id.fragment_container, CartFragment())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -52,6 +62,7 @@ class HomeScreen : AppCompatActivity(), OnItemSelectedListener {
                 binding.topBar.visibility = View.GONE
                 showFragment(ProfileFragment())
             }
+
         }
         return true
     }

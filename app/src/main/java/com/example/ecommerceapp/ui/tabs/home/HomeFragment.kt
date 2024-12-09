@@ -76,9 +76,9 @@ class HomeFragment : Fragment() {
             is HomeContract.State.SuccessByProducts -> bindProducts(state.products)
             is HomeContract.State.SuccessByBrands -> bindBrands(state.brands)
             is HomeContract.State.Initial -> return
-            is HomeContract.State.AddToWishlistError -> handleAddToWishlistError(state.message)
-            is HomeContract.State.AddToWishlistLoading -> handleAddToWishlistLoading()
-            is HomeContract.State.AddToWishlistSuccess -> handleAddToWishlistSuccess(
+            is HomeContract.State.ErrorAdd -> handleAddToWishlistError(state.message)
+            is HomeContract.State.LoadingAdd -> handleAddToWishlistLoading()
+            is HomeContract.State.SuccessAdd -> handleAddToWishlistSuccess(
                 state.product,
                 state.message
             )
@@ -181,6 +181,13 @@ class HomeFragment : Fragment() {
             ProductsAdapter.OnAddToWishlistClickListener { position, product ->
                 product?.let {
                     viewModel.invokeAction(HomeContract.Action.AddToWishlistClicked(it))
+                }
+            }
+
+        productsAdapter.onAddToCartClickListener =
+            ProductsAdapter.OnAddToCartClickListener { position, product ->
+                product?.let {
+                    viewModel.invokeAction(HomeContract.Action.AddToCartClicked(product))
                 }
             }
 

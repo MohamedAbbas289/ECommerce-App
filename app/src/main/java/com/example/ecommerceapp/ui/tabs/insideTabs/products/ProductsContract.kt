@@ -21,9 +21,9 @@ class ProductsContract {
         class ErrorByBrand(val message: String, val brand: Brand) : State()
         class Loading(val message: String) : State()
 
-        class SuccessAddToWishlist(val product: Product, val message: String) : State()
-        class ErrorAddToWishlist(val message: String) : State()
-        class LoadingAddToWishlist : State()
+        class SuccessAdd(val product: Product, val message: String) : State()
+        class ErrorAdd(val message: String) : State()
+        class LoadingAdd : State()
     }
 
     sealed class Action {
@@ -32,6 +32,7 @@ class ProductsContract {
         class LoadProductsByBrand(val brand: Brand) : Action()
         class ProductClicked(val product: Product) : Action()
         class AddToWishlistClicked(val product: Product) : Action()
+        class AddToCartClicked(val product: Product) : Action()
     }
 
     sealed class Event {

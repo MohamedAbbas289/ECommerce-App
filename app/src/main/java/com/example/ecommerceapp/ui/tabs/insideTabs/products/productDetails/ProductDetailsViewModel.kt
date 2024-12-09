@@ -4,11 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.common.ResultWrapper
+import com.example.domain.model.AddToCartRequest
 import com.example.domain.model.AddToWishListRequest
 import com.example.domain.model.Product
+import com.example.domain.model.UpdateQuantityRequest
 import com.example.domain.usecase.AddProductToWishlistUseCase
+import com.example.domain.usecase.AddToCartUseCase
 import com.example.domain.usecase.GetSessionUserUseCase
-import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsContract
+import com.example.domain.usecase.UpdateProductQuantityUseCase
 import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,6 +23,8 @@ import javax.inject.Inject
 class ProductDetailsViewModel @Inject constructor(
     private val addProductToWishlistUseCase: AddProductToWishlistUseCase,
     private val getSessionUserUseCase: GetSessionUserUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
+    private val updateProductQuantityUseCase: UpdateProductQuantityUseCase,
     @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), ProductDetailsContract.ViewModel {
     private val _state = MutableStateFlow<ProductDetailsContract.State>(
@@ -34,6 +39,94 @@ class ProductDetailsViewModel @Inject constructor(
     override fun invokeAction(action: ProductDetailsContract.Action) {
         when (action) {
             is ProductDetailsContract.Action.AddToWishlistClicked -> addProductToWishlist(action.product)
+            is ProductDetailsContract.Action.AddToCartClicked -> addProductToCart(action.product)
+            is ProductDetailsContract.Action.UpdateQuantity -> updateProductQuantity(
+                action.product,
+                action.quantity
+            )
+        }
+    }
+
+    private fun updateProductQuantity(product: Product, quantity: Int) {
+        viewModelScope.launch(ioDispatcher) {
+            _state.emit(ProductDetailsContract.State.Loading())
+            val userResponse = getSessionUserUseCase()
+            val updateQuantityRequest = UpdateQuantityRequest(quantity)
+            updateProductQuantityUseCase.invoke(
+                productId = product.id!!,
+                updateQuantityRequest = updateQuantityRequest,
+                token = userResponse?.token!!
+            )
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                ProductDetailsContract.State.Error(
+                                    response.error?.message ?: "Something went wrong"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> TODO()
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                ProductDetailsContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                ProductDetailsContract.State.SuccessAddToCart(
+                                    product,
+                                    response.data.message ?: "Product quantity updated successfully"
+                                )
+                            )
+                        }
+                    }
+                }
+
+        }
+    }
+
+
+    private fun addProductToCart(product: Product) {
+        viewModelScope.launch(ioDispatcher) {
+            _state.emit(ProductDetailsContract.State.Loading())
+            val userResponse = getSessionUserUseCase()
+            val addToCartRequest = AddToCartRequest(product.id)
+            addToCartUseCase(addToCartRequest, userResponse?.token!!)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _state.emit(
+                                ProductDetailsContract.State.Error(
+                                    response.error?.message ?: "Something went wrong"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> TODO()
+                        is ResultWrapper.ServerError -> {
+                            _state.emit(
+                                ProductDetailsContract.State.Error(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _state.emit(
+                                ProductDetailsContract.State.SuccessAddToCart(
+                                    product,
+                                    response.data.message
+                                        ?: "Product added successfully to your cart"
+                                )
+                            )
+                        }
+                    }
+                }
         }
     }
 
@@ -64,7 +157,7 @@ class ProductDetailsViewModel @Inject constructor(
 
                         is ResultWrapper.Success -> {
                             _state.emit(
-                                ProductDetailsContract.State.AddToWishlistSuccess(
+                                ProductDetailsContract.State.SuccessAddToWishlist(
                                     product,
                                     response.data.message ?: "Product added successfully"
                                 )

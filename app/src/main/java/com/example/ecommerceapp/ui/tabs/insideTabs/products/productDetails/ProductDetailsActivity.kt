@@ -45,11 +45,17 @@ class ProductDetailsActivity : AppCompatActivity() {
 
     private fun renderViewState(state: ProductDetailsContract.State) {
         when (state) {
-            is ProductDetailsContract.State.AddToWishlistSuccess -> handleSuccessAddToWishlist(state.message)
+            is ProductDetailsContract.State.SuccessAddToWishlist -> handleSuccessAddToWishlist(state.message)
             is ProductDetailsContract.State.Error -> handleError(state.message)
             is ProductDetailsContract.State.Initial -> return
             is ProductDetailsContract.State.Loading -> handleLoading()
+            is ProductDetailsContract.State.SuccessAddToCart -> handleSuccessAddToCart(state.message)
         }
+    }
+
+    private fun handleSuccessAddToCart(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        binding.progressBar.isVisible = false
     }
 
     private fun handleLoading() {
@@ -82,6 +88,12 @@ class ProductDetailsActivity : AppCompatActivity() {
         binding.addWishList.setOnClickListener {
             viewModel.invokeAction(ProductDetailsContract.Action.AddToWishlistClicked(product!!))
         }
+        binding.addToCart.setOnClickListener {
+            viewModel.invokeAction(
+                ProductDetailsContract.Action.AddToCartClicked(product!!)
+            )
+            //todo add product count with it
+        }
         bindProductImages()
         productCounterCalc()
     }
@@ -92,12 +104,24 @@ class ProductDetailsActivity : AppCompatActivity() {
                 productCounter++
             }
             binding.counterTxt.text = productCounter.toString()
+            viewModel.invokeAction(
+                ProductDetailsContract.Action.UpdateQuantity(
+                    product!!,
+                    productCounter
+                )
+            )
         }
         binding.decreaseCount.setOnClickListener {
             if (productCounter > 1) {
                 productCounter--
             }
             binding.counterTxt.text = productCounter.toString()
+            viewModel.invokeAction(
+                ProductDetailsContract.Action.UpdateQuantity(
+                    product!!,
+                    productCounter
+                )
+            )
         }
     }
 
