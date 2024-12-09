@@ -69,8 +69,15 @@ class CartFragment : Fragment() {
             is CartContract.State.SuccessRemovingProduct -> removeProduct(state.message, state.cart)
             is CartContract.State.LoadingRemovingProduct -> handleRemovingProductLoading()
             is CartContract.State.ClearCartSuccess -> clearCartSuccess(state.message)
+            is CartContract.State.UpdateQuantitySuccess -> updateCount(state.message, state.cart)
         }
 
+    }
+
+    private fun updateCount(message: String, cart: Cart) {
+        binding.progressBar.isVisible = false
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        binding.totalPriceTv.text = "EGP " + cart.totalCartPrice
     }
 
     private fun clearCartSuccess(message: String) {
@@ -157,6 +164,28 @@ class CartFragment : Fragment() {
                 }
             )
         }
+
+        cartAdapter.onPlusClickListener =
+            CartAdapter.OnPlusClickListener { productsItem, position ->
+                viewModel.invokeAction(
+                    CartContract.Action.UpdateProductQuantity(
+                        productsItem.product?.id!!,
+                        productsItem.count!!
+                    )
+                )
+                cartAdapter.updateItemCount(position)
+            }
+
+        cartAdapter.onMinusClickListener =
+            CartAdapter.OnMinusClickListener { productsItem, position ->
+                viewModel.invokeAction(
+                    CartContract.Action.UpdateProductQuantity(
+                        productsItem.product?.id!!,
+                        productsItem.count!!
+                    )
+                )
+            }
+
         binding.cartRecycler.adapter = cartAdapter
     }
 }

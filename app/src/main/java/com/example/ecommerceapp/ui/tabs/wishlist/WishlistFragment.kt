@@ -59,7 +59,14 @@ class WishlistFragment : Fragment() {
             is WishlistContract.State.RemoveFromWishlistError -> handleRemoveFromWishlistError(state.message)
             is WishlistContract.State.RemoveFromWishlistLoading -> handleRemoveFromWishlistLoading()
             is WishlistContract.State.RemoveFromWishlistSuccess -> removeProductFromWishlist()
+            is WishlistContract.State.AddToCartSuccess -> addProductToCart(state.message)
         }
+    }
+
+    private fun addProductToCart(message: String) {
+        binding.progressBar.isVisible = false
+        binding.successView.isEnabled = true
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun removeProductFromWishlist() {
@@ -108,6 +115,10 @@ class WishlistFragment : Fragment() {
             WishlistProductsAdapter.OnRemoveFromWishlistClickListener { product, position ->
                 viewModel.invokeAction(WishlistContract.Action.RemoveFromWishlist(product.id!!))
                 wishlistAdapter.removeItem(position)
+            }
+        wishlistAdapter.onAddToCartClickListener =
+            WishlistProductsAdapter.OnAddToCartClickListener { product, _ ->
+                viewModel.invokeAction(WishlistContract.Action.AddToCart(product.id!!))
             }
         binding.wishlistProductsRecycler.adapter = wishlistAdapter
     }

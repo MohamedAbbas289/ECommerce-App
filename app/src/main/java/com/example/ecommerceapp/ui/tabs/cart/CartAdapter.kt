@@ -39,6 +39,26 @@ class CartAdapter(
                 position
             )
         }
+
+        holder.binding.plusBtn.setOnClickListener {
+            val productItem = productsItems?.get(position)
+            productItem?.count = productItem?.count?.plus(1) // Increment the count locally
+            notifyItemChanged(position)
+            onPlusClickListener?.onPlusClick(
+                productsItems?.get(position)!!,
+                position
+            )
+        }
+
+        holder.binding.minusBtn.setOnClickListener {
+            val productItem = productsItems?.get(position)
+            productItem?.count = productItem?.count?.minus(1) // decrement the count locally
+            notifyItemChanged(position)
+            onMinusClickListener?.onMinusClick(
+                productsItems?.get(position)!!,
+                position
+            )
+        }
     }
 
     fun bindProducts(products: MutableList<ProductsItem?>?) {
@@ -57,9 +77,26 @@ class CartAdapter(
         notifyDataSetChanged()
     }
 
+    fun updateItemCount(position: Int) {
+        notifyItemChanged(position)
+    }
+
     var onRemoveFromCartClickListener: OnRemoveFromCartClickListener? = null
 
     fun interface OnRemoveFromCartClickListener {
         fun onRemoveFromCartClick(productsItem: ProductsItem, position: Int)
     }
+
+    var onPlusClickListener: OnPlusClickListener? = null
+
+    fun interface OnPlusClickListener {
+        fun onPlusClick(productsItem: ProductsItem, position: Int)
+    }
+
+    var onMinusClickListener: OnMinusClickListener? = null
+
+    fun interface OnMinusClickListener {
+        fun onMinusClick(productsItem: ProductsItem, position: Int)
+    }
+
 }

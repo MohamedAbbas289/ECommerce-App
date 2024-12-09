@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.common.ResultWrapper
+import com.example.domain.model.AddToCartRequest
+import com.example.domain.usecase.AddToCartUseCase
 import com.example.domain.usecase.GetSessionUserUseCase
 import com.example.domain.usecase.GetWishlistUseCase
 import com.example.domain.usecase.RemoveProductFromWishlistUseCase
@@ -19,6 +21,7 @@ class WishlistViewModel @Inject constructor(
     private val getWishlistUseCase: GetWishlistUseCase,
     private val getSessionUserUseCase: GetSessionUserUseCase,
     private val removeProductFromWishlistUseCase: RemoveProductFromWishlistUseCase,
+    private val addToCartUseCase: AddToCartUseCase,
     @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel(), WishlistContract.ViewModel {
     private val _states = MutableStateFlow<WishlistContract.State>(
@@ -33,6 +36,40 @@ class WishlistViewModel @Inject constructor(
         when (action) {
             is WishlistContract.Action.LoadWishlist -> loadWishlist()
             is WishlistContract.Action.RemoveFromWishlist -> removeFromWishlist(action.productId)
+            is WishlistContract.Action.AddToCart -> addProductToCart(action.productId)
+        }
+    }
+
+    private fun addProductToCart(productId: String) {
+        viewModelScope.launch(ioDispatcher) {
+            _states.value = WishlistContract.State.RemoveFromWishlistLoading()
+            val userResponse = getSessionUserUseCase.invoke()
+            val addToCartRequest = AddToCartRequest(productId)
+            addToCartUseCase.invoke(addToCartRequest, userResponse?.token!!)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _states.emit(
+                                WishlistContract.State.RemoveFromWishlistError(
+                                    response.error?.message ?: "Something went wrong"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> TODO()
+                        is ResultWrapper.ServerError -> {
+                            _states.emit(
+                                WishlistContract.State.RemoveFromWishlistError(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _states.emit(WishlistContract.State.AddToCartSuccess("Product added to cart"))
+                        }
+                    }
+                }
         }
     }
 

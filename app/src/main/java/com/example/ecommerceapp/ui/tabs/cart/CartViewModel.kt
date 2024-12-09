@@ -4,10 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.common.ResultWrapper
+import com.example.domain.model.UpdateQuantityRequest
 import com.example.domain.usecase.ClearCartUseCase
 import com.example.domain.usecase.GetCartUseCase
 import com.example.domain.usecase.GetSessionUserUseCase
 import com.example.domain.usecase.RemoveFromCartUseCase
+import com.example.domain.usecase.UpdateProductQuantityUseCase
 import com.example.ecommerceapp.utils.DispatchersModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,6 +21,7 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(
     private val getCartUseCase: GetCartUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
+    private val updateProductQuantityUseCase: UpdateProductQuantityUseCase,
     private val getSessionUserUseCase: GetSessionUserUseCase,
     private val clearCartUseCase: ClearCartUseCase,
     @DispatchersModule.IoDispatcher private val ioDispatcher: CoroutineDispatcher
@@ -36,6 +39,48 @@ class CartViewModel @Inject constructor(
             is CartContract.Action.LoadCart -> loadCartProducts()
             is CartContract.Action.RemoveProductFromCart -> removeProductFromCart(action.productId)
             is CartContract.Action.ClearCart -> clearUserCart()
+            is CartContract.Action.UpdateProductQuantity -> updateProductQuantity(
+                action.productId,
+                action.quantity
+            )
+        }
+    }
+
+    private fun updateProductQuantity(productId: String, quantity: Int) {
+        viewModelScope.launch(ioDispatcher) {
+            _states.emit(CartContract.State.LoadingRemovingProduct())
+            val userResponse = getSessionUserUseCase.invoke()
+            val updateQuantityRequest = UpdateQuantityRequest(quantity)
+            updateProductQuantityUseCase(productId, updateQuantityRequest, userResponse?.token!!)
+                .collect { response ->
+                    when (response) {
+                        is ResultWrapper.Error -> {
+                            _states.emit(
+                                CartContract.State.ErrorRemovingProduct(
+                                    response.error?.message ?: "Something went Wrong"
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Loading -> TODO()
+                        is ResultWrapper.ServerError -> {
+                            _states.emit(
+                                CartContract.State.ErrorRemovingProduct(
+                                    response.serverError.serverMessage
+                                )
+                            )
+                        }
+
+                        is ResultWrapper.Success -> {
+                            _states.emit(
+                                CartContract.State.UpdateQuantitySuccess(
+                                    response.data.message ?: "Product count updated",
+                                    response.data.cart!!
+                                )
+                            )
+                        }
+                    }
+                }
         }
     }
 

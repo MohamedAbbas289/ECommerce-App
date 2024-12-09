@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.model.Product
-import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.ItemWishlistProductBinding
 
 class WishlistProductsAdapter(var products: MutableList<Product?>?) :
@@ -34,6 +33,12 @@ class WishlistProductsAdapter(var products: MutableList<Product?>?) :
                 position
             )
         }
+        holder.binding.addToCartBtn.setOnClickListener {
+            onAddToCartClickListener?.onAddToCartClick(
+                products?.get(position)!!,
+                position
+            )
+        }
     }
 
     fun bindWishlistProducts(wishlistProducts: MutableList<Product?>?) {
@@ -49,10 +54,13 @@ class WishlistProductsAdapter(var products: MutableList<Product?>?) :
 
 
     var onRemoveFromWishlistClickListener: OnRemoveFromWishlistClickListener? = null
-
     fun interface OnRemoveFromWishlistClickListener {
         fun onRemoveFromWishlistClick(product: Product, position: Int)
     }
 
+    var onAddToCartClickListener: OnAddToCartClickListener? = null
 
+    fun interface OnAddToCartClickListener {
+        fun onAddToCartClick(product: Product, position: Int)
+    }
 }

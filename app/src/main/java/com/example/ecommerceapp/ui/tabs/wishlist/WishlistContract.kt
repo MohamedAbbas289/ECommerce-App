@@ -18,11 +18,13 @@ class WishlistContract {
         class RemoveFromWishlistSuccess : State()
         class RemoveFromWishlistLoading : State()
         class RemoveFromWishlistError(val message: String) : State()
+        class AddToCartSuccess(val message: String) : State()
     }
 
     sealed class Action {
         class LoadWishlist : Action()
         class RemoveFromWishlist(val productId: String) : Action()
+        class AddToCart(val productId: String) : Action()
     }
 
     sealed class Event

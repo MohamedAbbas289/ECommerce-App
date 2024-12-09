@@ -19,12 +19,14 @@ class CartContract {
         class SuccessRemovingProduct(val message: String, val cart: Cart) : State()
         class LoadingRemovingProduct : State()
         class ClearCartSuccess(val message: String) : State()
+        class UpdateQuantitySuccess(val message: String, val cart: Cart) : State()
     }
 
     sealed class Action {
         class LoadCart : Action()
         class RemoveProductFromCart(val productId: String) : Action()
         class ClearCart : Action()
+        class UpdateProductQuantity(val productId: String, val quantity: Int) : Action()
     }
 
     sealed class Event {
