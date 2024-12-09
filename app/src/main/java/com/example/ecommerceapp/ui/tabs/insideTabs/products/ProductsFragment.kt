@@ -92,13 +92,13 @@ class ProductsFragment : Fragment() {
             )
 
             is ProductsContract.State.ErrorByBrand -> showErrorByBrand(state.message, state.brand)
-            is ProductsContract.State.ErrorAddToWishlist -> showErrorAddToWishlist(state.message)
-            is ProductsContract.State.LoadingAddToWishlist -> showLoadingAddToWishlist()
-            is ProductsContract.State.SuccessAddToWishlist -> handleSuccessAddToWishlist(state.message)
+            is ProductsContract.State.ErrorAdd -> showErrorAdd(state.message)
+            is ProductsContract.State.LoadingAdd -> showLoadingAdd()
+            is ProductsContract.State.SuccessAdd -> handleSuccessAdd(state.message)
         }
     }
 
-    private fun handleSuccessAddToWishlist(message: String) {
+    private fun handleSuccessAdd(message: String) {
         binding.addToWishlistLoadingView.isVisible = false
         binding.successView.isVisible = true
         binding.loadingView.isVisible = false
@@ -106,15 +106,16 @@ class ProductsFragment : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun showLoadingAddToWishlist() {
+    private fun showLoadingAdd() {
         Log.d("GTAG", "showLoadingAddToWishlist")
         binding.successView.isVisible = true
         binding.loadingView.isVisible = false
         binding.errorView.isVisible = false
         binding.addToWishlistLoadingView.isVisible = true
+        binding.successView.isEnabled = false
     }
 
-    private fun showErrorAddToWishlist(message: String) {
+    private fun showErrorAdd(message: String) {
         binding.addToWishlistLoadingView.isVisible = false
         binding.successView.isVisible = true
         binding.loadingView.isVisible = false
@@ -196,6 +197,13 @@ class ProductsFragment : Fragment() {
             ProductsAdapter.OnAddToWishlistClickListener { position, product ->
                 product?.let {
                     viewModel.invokeAction(ProductsContract.Action.AddToWishlistClicked(it))
+                }
+            }
+
+        productsAdapter.onAddToCartClickListener =
+            ProductsAdapter.OnAddToCartClickListener { position, product ->
+                product?.let {
+                    viewModel.invokeAction(ProductsContract.Action.AddToCartClicked(it))
                 }
             }
     }

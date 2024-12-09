@@ -1,6 +1,7 @@
 package com.example.data.dataSource
 
 import com.example.data.dataSource.brand.BrandDataSourceImpl
+import com.example.data.dataSource.cart.CartDataSourceImpl
 import com.example.data.dataSource.category.CategoryDataSourceImpl
 import com.example.data.dataSource.login.LoginDataSourceImpl
 import com.example.data.dataSource.product.ProductDataSourceImpl
@@ -9,6 +10,7 @@ import com.example.data.dataSource.subCategory.SubCategoryDataSourceImpl
 import com.example.data.dataSource.updateProfile.UpdateProfileDataSourceImpl
 import com.example.data.dataSource.wishlist.WishlistDataSourceImpl
 import com.example.data.dataSourceContract.BrandDataSource
+import com.example.data.dataSourceContract.CartDataSource
 import com.example.data.dataSourceContract.CategoryDataSource
 import com.example.data.dataSourceContract.LoginDataSource
 import com.example.data.dataSourceContract.ProductDataSource
@@ -63,4 +65,9 @@ abstract class Di {
     abstract fun bindWishlistDataSource(
         wishlistDataSourceImpl: WishlistDataSourceImpl
     ): WishlistDataSource
+
+    @Binds
+    abstract fun bindCartDataSource(
+        cartDataSourceImpl: CartDataSourceImpl
+    ): CartDataSource
 }

@@ -43,4 +43,8 @@
     <string name="phone_number">Phone Number</string>
     <string name="update_profile">Update Profile</string>
     <string name="account">Account</string>
+    <string name="check_out">Check Out</string>
+    <string name="total_price">Total price</string>
+    <string name="cart">Cart</string>
+    <string name="your_cart_is_empty">Your cart is empty</string>
 </resources>

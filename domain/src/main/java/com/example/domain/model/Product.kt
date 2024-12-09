@@ -21,5 +21,6 @@ data class Product(
     val brand: Brand? = null,
     val slug: String? = null,
     val updatedAt: String? = null,
-    var isInWishlist: Boolean = false
+    var isInWishlist: Boolean = false,
+    var isInCart: Boolean = false,
 ) : Parcelable

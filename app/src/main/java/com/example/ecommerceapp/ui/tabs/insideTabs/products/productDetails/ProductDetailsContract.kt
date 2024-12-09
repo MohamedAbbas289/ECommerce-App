@@ -14,12 +14,15 @@ class ProductDetailsContract {
     sealed class State {
         class Initial : State()
         class Loading : State()
-        class AddToWishlistSuccess(val product: Product, val message: String) : State()
+        class SuccessAddToWishlist(val product: Product, val message: String) : State()
+        class SuccessAddToCart(val product: Product, val message: String) : State()
         data class Error(val message: String) : State()
     }
 
     sealed class Action {
         class AddToWishlistClicked(val product: Product) : Action()
+        class AddToCartClicked(val product: Product) : Action()
+        class UpdateQuantity(val product: Product, val quantity: Int) : Action()
     }
 
     sealed class Event
