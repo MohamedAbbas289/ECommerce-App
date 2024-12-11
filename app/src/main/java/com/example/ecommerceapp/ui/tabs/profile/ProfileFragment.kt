@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentProfileBinding
 import com.example.ecommerceapp.ui.tabs.auth.login.LoginActivity
+import com.example.ecommerceapp.ui.tabs.profile.addresses.AddressesFragment
 import com.example.ecommerceapp.ui.tabs.profile.userInfo.UserInfoFragment
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,19 +51,24 @@ class ProfileFragment : Fragment() {
         }
 
         binding.myInformationBtn.setOnClickListener {
-            navigateToMyInformation()
+            navigateToFragment(UserInfoFragment())
+        }
+
+        binding.shippingAddressBtn.setOnClickListener {
+            navigateToFragment(AddressesFragment())
         }
     }
 
-    private fun navigateToMyInformation() {
+    private fun navigateToFragment(fragment: Fragment) {
         parentFragmentManager
             .beginTransaction()
             .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
             .hide(this)
-            .add(R.id.fragment_container, UserInfoFragment())
+            .add(R.id.fragment_container, fragment)
             .addToBackStack(null)
             .commit()
     }
+
 
     private fun navigateToLogin() {
         val intent = Intent(requireContext(), LoginActivity::class.java)
