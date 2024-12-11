@@ -1,5 +1,6 @@
 package com.example.data.api
 
+import com.example.data.model.addresses.BaseUserAddressResponseDto
 import com.example.data.model.brand.BrandResponse
 import com.example.data.model.cart.BaseCartResponseDto
 import com.example.data.model.cart.addToCart.AddToCartResponseDto
@@ -15,6 +16,7 @@ import com.example.domain.model.LoginRequest
 import com.example.domain.model.SignupRequest
 import com.example.domain.model.UpdateProfileRequest
 import com.example.domain.model.UpdateQuantityRequest
+import com.example.domain.model.UserAddressRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -93,5 +95,20 @@ interface WebServices {
 
     @DELETE("api/v1/cart")
     suspend fun clearCart(@Query("token") token: String): BaseCartResponseDto
+
+    @POST("api/v1/addresses")
+    suspend fun addAddress(
+        @Body address: UserAddressRequest,
+        @Query("token") token: String
+    ): BaseUserAddressResponseDto
+
+    @GET("api/v1/addresses")
+    suspend fun getUserAddresses(@Query("token") token: String): BaseUserAddressResponseDto
+
+    @DELETE("api/v1/addresses/{id}")
+    suspend fun removeAddress(
+        @Path("id") addressId: String,
+        @Query("token") token: String
+    ): BaseUserAddressResponseDto
 
 }

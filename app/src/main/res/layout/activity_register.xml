@@ -61,6 +61,7 @@
                     android:layout_marginTop="4dp"
                     app:boxStrokeColor="@color/primary_color"
                     app:error="@{vm.userNameError}"
+                    app:hintEnabled="false"
                     app:errorEnabled="true"
                     app:helperTextTextAppearance="@color/primary_color"
                     app:layout_constraintTop_toBottomOf="@id/full_name_txt">
@@ -95,6 +96,7 @@
                     android:layout_marginTop="4dp"
                     app:boxStrokeColor="@color/primary_color"
                     app:error="@{vm.emailError}"
+                    app:hintEnabled="false"
                     app:errorEnabled="true"
                     app:helperTextTextAppearance="@color/primary_color"
                     app:layout_constraintTop_toBottomOf="@id/email_txt">
@@ -129,6 +131,7 @@
                     android:layout_marginTop="4dp"
                     app:boxStrokeColor="@color/primary_color"
                     app:error="@{vm.phoneError}"
+                    app:hintEnabled="false"
                     app:errorEnabled="true"
                     app:helperTextTextAppearance="@color/primary_color"
                     app:layout_constraintTop_toBottomOf="@id/phone_no_txt">
@@ -162,6 +165,7 @@
                     android:layout_marginTop="4dp"
                     app:boxStrokeColor="@color/primary_color"
                     app:error="@{vm.passwordError}"
+                    app:hintEnabled="false"
                     app:errorEnabled="true"
                     app:helperTextTextAppearance="@color/primary_color"
                     app:layout_constraintTop_toBottomOf="@id/password_txt"
@@ -197,6 +201,7 @@
                     android:layout_marginTop="4dp"
                     app:boxStrokeColor="@color/primary_color"
                     app:error="@{vm.passwordConfirmationError}"
+                    app:hintEnabled="false"
                     app:errorEnabled="true"
                     app:helperTextTextAppearance="@color/primary_color"
                     app:layout_constraintTop_toBottomOf="@id/re_password_txt"

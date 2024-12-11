@@ -47,4 +47,9 @@
     <string name="total_price">Total price</string>
     <string name="cart">Cart</string>
     <string name="your_cart_is_empty">Your cart is empty</string>
+    <string name="add_new_address">Add New Address</string>
+    <string name="address_name">Address name</string>
+    <string name="address_details">Address details</string>
+    <string name="city">City</string>
+    <string name="save_address">Save Address</string>
 </resources>

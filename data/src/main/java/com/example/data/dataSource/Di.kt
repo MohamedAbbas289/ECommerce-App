@@ -1,5 +1,6 @@
 package com.example.data.dataSource
 
+import com.example.data.dataSource.addresses.UserAddressesDataSourceImpl
 import com.example.data.dataSource.brand.BrandDataSourceImpl
 import com.example.data.dataSource.cart.CartDataSourceImpl
 import com.example.data.dataSource.category.CategoryDataSourceImpl
@@ -17,6 +18,7 @@ import com.example.data.dataSourceContract.ProductDataSource
 import com.example.data.dataSourceContract.SignupDataSource
 import com.example.data.dataSourceContract.SubCategoryDataSource
 import com.example.data.dataSourceContract.UpdateProfileDataSource
+import com.example.data.dataSourceContract.UserAddressesDataSource
 import com.example.data.dataSourceContract.WishlistDataSource
 import dagger.Binds
 import dagger.Module
@@ -70,4 +72,9 @@ abstract class Di {
     abstract fun bindCartDataSource(
         cartDataSourceImpl: CartDataSourceImpl
     ): CartDataSource
+
+    @Binds
+    abstract fun bindUserAddressesDataSource(
+        userAddressesDataSourceImpl: UserAddressesDataSourceImpl
+    ): UserAddressesDataSource
 }
