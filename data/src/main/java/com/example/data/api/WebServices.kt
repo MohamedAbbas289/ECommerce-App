@@ -5,6 +5,8 @@ import com.example.data.model.brand.BrandResponse
 import com.example.data.model.cart.BaseCartResponseDto
 import com.example.data.model.cart.addToCart.AddToCartResponseDto
 import com.example.data.model.category.CategoriesResponse
+import com.example.data.model.order.CardOrderResponseDto
+import com.example.data.model.order.CashOrderResponseDto
 import com.example.data.model.product.ProductResponse
 import com.example.data.model.subCategory.SubCategoryResponse
 import com.example.data.model.user.AuthResponse
@@ -13,6 +15,7 @@ import com.example.data.model.wishlist.WishlistResponse
 import com.example.domain.model.AddToCartRequest
 import com.example.domain.model.AddToWishListRequest
 import com.example.domain.model.LoginRequest
+import com.example.domain.model.OrderRequest
 import com.example.domain.model.SignupRequest
 import com.example.domain.model.UpdateProfileRequest
 import com.example.domain.model.UpdateQuantityRequest
@@ -110,5 +113,19 @@ interface WebServices {
         @Path("id") addressId: String,
         @Query("token") token: String
     ): BaseUserAddressResponseDto
+
+    @POST("api/v1/orders/{id}")
+    suspend fun createCashOrder(
+        @Body orderRequest: OrderRequest,
+        @Path("id") cartId: String,
+        @Query("token") token: String
+    ): CashOrderResponseDto
+
+    @POST("api/v1/orders/checkout-session/{id}")
+    suspend fun createOnlineOrder(
+        @Body orderRequest: OrderRequest,
+        @Path("id") cartId: String,
+        @Query("token") token: String
+    ): CardOrderResponseDto
 
 }

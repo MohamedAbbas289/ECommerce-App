@@ -116,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@={vm.password}"
-                android:autofillHints="emailAddress"
+                android:autofillHints="password"
                 android:background="@drawable/edit_text_background"
                 android:hint="@string/enter_your_password"
                 android:inputType="textPassword" />
