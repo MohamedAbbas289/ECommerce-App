@@ -27,9 +27,10 @@ class CartContract {
         class RemoveProductFromCart(val productId: String) : Action()
         class ClearCart : Action()
         class UpdateProductQuantity(val productId: String, val quantity: Int) : Action()
+        class CheckoutClicked(val cartId: String) : Action()
     }
 
     sealed class Event {
-        class NavigateToCheckout : Event()
+        class NavigateToCheckout(val cartId: String) : Event()
     }
 }

@@ -11,9 +11,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.domain.common.Constants.Companion.CART_ID_KEY
+import com.example.domain.common.Constants.Companion.SUB_CATEGORY_OBJECT
 import com.example.domain.model.cart.Cart
 import com.example.ecommerceapp.R
 import com.example.ecommerceapp.databinding.FragmentCartBinding
+import com.example.ecommerceapp.ui.tabs.checkout.CheckoutFragment
+import com.example.ecommerceapp.ui.tabs.insideTabs.products.ProductsFragment
 import com.example.ecommerceapp.utils.showMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -23,6 +27,7 @@ class CartFragment : Fragment() {
     private lateinit var binding: FragmentCartBinding
     private lateinit var viewModel: CartViewModel
     private val cartAdapter = CartAdapter(null)
+    private var cartId: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[CartViewModel::class.java]
@@ -43,7 +48,7 @@ class CartFragment : Fragment() {
     }
 
     private fun initObservers() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.states.collect {
                     renderViewStates(it)
@@ -56,8 +61,21 @@ class CartFragment : Fragment() {
 
     private fun handleEvents(event: CartContract.Event) {
         when (event) {
-            is CartContract.Event.NavigateToCheckout -> TODO()
+            is CartContract.Event.NavigateToCheckout -> navigateToCheckout(event.cartId)
         }
+    }
+
+    private fun navigateToCheckout(cartId: String) {
+        val bundle = Bundle()
+        bundle.putString(CART_ID_KEY, cartId)
+        val checkoutFragment = CheckoutFragment()
+        checkoutFragment.arguments = bundle
+        parentFragmentManager
+            .beginTransaction()
+            .setCustomAnimations(R.anim.slide_in, R.anim.fade_out)
+            .replace(R.id.fragment_container, checkoutFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun renderViewStates(state: CartContract.State) {
@@ -125,6 +143,7 @@ class CartFragment : Fragment() {
         binding.totalPriceTv.text = "EGP " + cart.totalCartPrice
         cartAdapter.bindProducts(cart.products?.toMutableList())
         checkIfCartIsEmpty()
+        cartId = cart.id
     }
 
     private fun checkIfCartIsEmpty(): Boolean {
@@ -159,10 +178,23 @@ class CartFragment : Fragment() {
                 posActionName = "yes",
                 negActionName = "cancel",
                 posAction = { dialog, _ ->
+                    if (cartAdapter.itemCount == 0) {
+                        dialog.dismiss()
+                        Toast.makeText(
+                            requireContext(),
+                            "Cart is already empty",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                     viewModel.invokeAction(CartContract.Action.ClearCart())
                     dialog.dismiss()
+
                 }
             )
+        }
+
+        binding.checkoutBtn.setOnClickListener {
+            navigateToCheckout(cartId!!)
         }
 
         cartAdapter.onPlusClickListener =
@@ -178,12 +210,20 @@ class CartFragment : Fragment() {
 
         cartAdapter.onMinusClickListener =
             CartAdapter.OnMinusClickListener { productsItem, position ->
-                viewModel.invokeAction(
-                    CartContract.Action.UpdateProductQuantity(
-                        productsItem.product?.id!!,
-                        productsItem.count!!
+                if (productsItem.count!! == 0) {
+                    viewModel.invokeAction(
+                        CartContract.Action.RemoveProductFromCart(
+                            productsItem.product?.id!!
+                        )
                     )
-                )
+                } else {
+                    viewModel.invokeAction(
+                        CartContract.Action.UpdateProductQuantity(
+                            productsItem.product?.id!!,
+                            productsItem.count!!
+                        )
+                    )
+                }
             }
 
         binding.cartRecycler.adapter = cartAdapter

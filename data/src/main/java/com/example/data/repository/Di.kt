@@ -6,6 +6,7 @@ import com.example.data.repository.brand.BrandRepositoryImpl
 import com.example.data.repository.cart.CartRepositoryImpl
 import com.example.data.repository.category.CategoryRepositoryImpl
 import com.example.data.repository.login.LoginRepositoryImpl
+import com.example.data.repository.order.OrdersRepositoryImpl
 import com.example.data.repository.product.ProductRepositoryImpl
 import com.example.data.repository.signup.SignupRepositoryImpl
 import com.example.data.repository.updateProfile.UpdateProfileRepositoryImpl
@@ -15,6 +16,7 @@ import com.example.domain.repositories.brands.BrandsRepository
 import com.example.domain.repositories.cart.CartRepository
 import com.example.domain.repositories.categories.CategoriesRepository
 import com.example.domain.repositories.login.LoginRepository
+import com.example.domain.repositories.order.OrdersRepository
 import com.example.domain.repositories.products.ProductsRepository
 import com.example.domain.repositories.signup.SignupRepository
 import com.example.domain.repositories.subCategories.SubCategoriesRepository
@@ -77,4 +79,9 @@ abstract class Di {
     abstract fun bindUserAddressesRepository(
         userAddressesRepositoryImpl: UserAddressesRepositoryImpl
     ): UserAddressesRepository
+
+    @Binds
+    abstract fun bindOrdersRepository(
+        ordersRepositoryImpl: OrdersRepositoryImpl
+    ): OrdersRepository
 }

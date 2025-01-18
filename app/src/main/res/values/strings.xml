@@ -52,4 +52,14 @@
     <string name="address_details">Address details</string>
     <string name="city">City</string>
     <string name="save_address">Save Address</string>
+    <string name="add_new_sipping_address">Add New Sipping Address</string>
+    <string name="cash_on_delivery">Cash on delivery</string>
+    <string name="credit_card">Credit card</string>
+    <string name="confirm_order">Confirm Order</string>
+    <string name="order_placed_successfully">Order Placed Successfully</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="delivery_charge">Delivery Charge</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="you_will_receive_your_product_in_2_3_days">You will receive your product in 2-3 days</string>
+    <string name="continue_shopping">Continue Shopping</string>
 </resources>

@@ -43,6 +43,14 @@ class CartViewModel @Inject constructor(
                 action.productId,
                 action.quantity
             )
+
+            is CartContract.Action.CheckoutClicked -> navigateToCheckout(action.cartId)
+        }
+    }
+
+    private fun navigateToCheckout(cartId: String) {
+        viewModelScope.launch(ioDispatcher) {
+            _events.postValue(CartContract.Event.NavigateToCheckout(cartId))
         }
     }
 

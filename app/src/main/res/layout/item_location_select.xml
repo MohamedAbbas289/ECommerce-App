@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="address"
+            type="com.example.domain.model.addresses.Address" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:cardElevation="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="8dp">
+
+            <ImageView
+                android:id="@+id/location_img"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/location_ic"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RadioButton
+                android:id="@+id/radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:buttonTint="@color/primary_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:checked="true" />
+
+            <TextView
+                android:id="@+id/address_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@{address.name}"
+                android:textColor="@color/primary_color_dark"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/location_img"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Home" />
+
+            <TextView
+                android:id="@+id/address_city_and_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="@{address.city + `, ` + address.details}"
+                android:textColor="@color/primary_color_dark"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/location_img"
+                app:layout_constraintTop_toBottomOf="@id/address_name"
+                tools:text="cairo, nasr city" />
+
+            <TextView
+                android:id="@+id/address_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@{`Phone: `+address.phone}"
+                android:textColor="@color/primary_color_dark"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/location_img"
+                app:layout_constraintTop_toBottomOf="@id/address_city_and_details"
+                tools:text="phone: 01070800978" />
+
+            <View
+                android:layout_width="180dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="6dp"
+                android:background="#C3C3C3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/address_phone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</layout>

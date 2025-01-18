@@ -52,12 +52,19 @@ class CartAdapter(
 
         holder.binding.minusBtn.setOnClickListener {
             val productItem = productsItems?.get(position)
-            productItem?.count = productItem?.count?.minus(1) // decrement the count locally
-            notifyItemChanged(position)
-            onMinusClickListener?.onMinusClick(
-                productsItems?.get(position)!!,
-                position
-            )
+            if (productItem?.count!! == 1) {
+                onRemoveFromCartClickListener?.onRemoveFromCartClick(
+                    productsItems?.get(position)!!,
+                    position
+                )
+            } else {
+                productItem.count = productItem.count?.minus(1) // decrement the count locally
+                notifyItemChanged(position)
+                onMinusClickListener?.onMinusClick(
+                    productsItems?.get(position)!!,
+                    position
+                )
+            }
         }
     }
 
